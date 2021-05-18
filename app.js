@@ -55,22 +55,24 @@ window.onload = () => {
             position.coords.longitude,
             target_Lat,
             target_Long);
-        window.onorientationchange = function(event) {
+        console.log("inside geoloc loop");
+            displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
+            latitude:${position.coords.latitude};
+            and you are ${distance_Device_Target} km away from target.`;
+        /* window.onorientationchange = function(event) {
+            console.log("in orientation function");
             console.log("the orientation of the device is now " + event.target.screen.orientation.angle);
             displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
             latitude:${position.coords.latitude};
             and you are ${distance_Device_Target} km away from target. 
             Also, orientation is ${event.target.screen.orientation.angle}`;
         };
+        */
       });
     }
 };
 
-/// ORIENTATION EVENT ///
-
-window.onorientationchange = function(event) {
-    console.log("the orientation of the device is now " + event.target.screen.orientation.angle);
-  };
+/// /// AUXILIARIES /// ///
 
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
 function calcCrow(lat1, lon1, lat2, lon2) 
