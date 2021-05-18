@@ -1,4 +1,6 @@
 const log = console.log;
+const target_Long = 2.295284992068256;
+const target_Lat = 48.87397517044594;
 
 // Set constraints for the video stream
 var constraints = {
@@ -41,13 +43,33 @@ window.addEventListener("load", cameraStart, false);
       navigator.geolocation.watchPosition(function (position) {
         // Managing logging on the left of the screen
         var displayed_Logs = document.getElementById('logs');
+        var distance_Device_Target = calcCrow(
+            position.coords.latitude,
+            position.coords.longitude,
+            target_Lat,
+            target_Long);
         displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
-        latitude:${position.coords.latitude}`;
-        // Managing form pre-filling with gps coordinates
-        var lat = document.getElementById('lat');
-        var long = document.getElementById('long');
-        //lat.value=position.coords.latitude;
-        //long.value=position.coords.longitude;
+        latitude:${position.coords.latitude};
+        and you are ${distance_Device_Target} away from target`;
       });
     }
 };
+//This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
+function calcCrow(lat1, lon1, lat2, lon2) 
+{
+    var R = 6371; // km
+    var dLat = toRad(lat2-lat1);
+    var dLon = toRad(lon2-lon1);
+    var lat1 = toRad(lat1);
+    var lat2 = toRad(lat2);
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c;
+    return d;
+}
+// Converts numeric degrees to radians
+function toRad(Value) 
+{
+    return Value * Math.PI / 180;
+}
