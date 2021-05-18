@@ -42,20 +42,20 @@ window.onload = () => {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(function (position) {
         // Managing logging on the left of the screen
-        var displayed_Logs = document.getElementById('logs');
+        var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
         var distance_Device_Target = calcCrow(
             position.coords.latitude,
             position.coords.longitude,
             target_Lat,
             target_Long);
         console.log("inside geoloc loop");
-        displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
+        displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
             latitude:${position.coords.latitude};
             and you are ${distance_Device_Target} km away from target.`;
         /* window.onorientationchange = function(event) {
             console.log("in orientation function");
             console.log("the orientation of the device is now " + event.target.screen.orientation.angle);
-            displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
+            displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
             latitude:${position.coords.latitude};
             and you are ${distance_Device_Target} km away from target. 
             Also, orientation is ${event.target.screen.orientation.angle}`;
@@ -64,6 +64,18 @@ window.onload = () => {
       });
     }
 };
+
+/// ORIENTATION ///
+
+function handleOrientation(event) {
+    var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
+    var absolute = event.absolute;
+    var alpha    = event.alpha;
+    var beta     = event.beta;
+    var gamma    = event.gamma;
+    console.log("inside orientation handler");
+    displayed_Logs_Orientation.innerHTML = ` Regarding Orientation : ${absolute}, ${alpha}, ${beta}, ${gamma}`;
+}  
 
 /// /// AUXILIARIES /// ///
 
