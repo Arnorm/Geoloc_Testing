@@ -52,20 +52,16 @@ window.onload = () => {
         displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
             latitude:${position.coords.latitude};
             and you are ${distance_Device_Target} km away from target.`;
-        /* window.onorientationchange = function(event) {
-            console.log("in orientation function");
-            console.log("the orientation of the device is now " + event.target.screen.orientation.angle);
-            displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
-            latitude:${position.coords.latitude};
-            and you are ${distance_Device_Target} km away from target. 
-            Also, orientation is ${event.target.screen.orientation.angle}`;
-        };
-        */
       });
     }
 };
 
 /// ORIENTATION ///
+
+if (window.DeviceOrientationEvent) {
+  } else {
+    console.log('device orientation not supported');
+  }
 
 function handleOrientation(event) {
     var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
