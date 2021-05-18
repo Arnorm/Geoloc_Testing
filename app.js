@@ -43,15 +43,23 @@ window.onload = () => {
       navigator.geolocation.watchPosition(function (position) {
         // Managing logging on the left of the screen
         var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
+        var bearing_Device_Target = bearing(
+            position.coords.latitude,
+            position.coords.longitude,
+            target_Lat,
+            target_Long
+        );
         var distance_Device_Target = calcCrow(
             position.coords.latitude,
             position.coords.longitude,
             target_Lat,
-            target_Long);
+            target_Long
+        );
         console.log("inside geoloc loop");
         displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
             latitude:${position.coords.latitude};
-            and you are ${distance_Device_Target} km away from target.`;
+            and you are ${distance_Device_Target} km away from target.
+            Also, bearing is : ${bearing_Device_Target}`;
       });
     }
 };
@@ -60,14 +68,13 @@ window.onload = () => {
 
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', update, true);
-    async function update(event){
-        await sleep(1000);
+    function update(event){
         var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
         console.log(event);
         var absolute = event.absolute;
-        var alpha    = event.alpha;
-        var beta     = event.beta;
-        var gamma    = event.gamma;
+        var alpha = event.alpha;
+        var beta = event.beta;
+        var gamma = event.gamma;
         console.log("inside orientation handler");
         displayed_Logs_Orientation.innerHTML = ` Regarding Orientation : ${absolute}, ${alpha}, ${beta}, ${gamma}`;
     }
@@ -81,22 +88,37 @@ if (window.DeviceOrientationEvent) {
 function calcCrow(lat1, lon1, lat2, lon2) 
 {
     var R = 6371; // km
-    var dLat = toRad(lat2-lat1);
-    var dLon = toRad(lon2-lon1);
-    var lat1 = toRad(lat1);
-    var lat2 = toRad(lat2);
+    var dLat = toRadians(lat2-lat1);
+    var dLon = toRadians(lon2-lon1);
+    var lat1 = toRadians(lat1);
+    var lat2 = toRadians(lat2);
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     var d = R * c;
     return d;
 }
-// Converts numeric degrees to radians
-function toRad(Value) 
-{
-    return Value * Math.PI / 180;
-}  
-// Sleep function
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+
+// Converts from degrees to radians.
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+  };
+   
+// Converts from radians to degrees.
+function toDegrees(radians) {
+    return radians * 180 / Math.PI;
+}
+  
+// Bearing formula, bewteen two 2D points
+function bearing(startLat, startLng, destLat, destLng){
+    startLat = toRadians(startLat);
+    startLng = toRadians(startLng);
+    destLat = toRadians(destLat);
+    destLng = toRadians(destLng);
+    y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    x = Math.cos(startLat) * Math.sin(destLat) -
+          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+    brng = Math.atan2(y, x);
+    brng = toDegrees(brng);
+    return (brng + 360) % 360;
+}
