@@ -30,14 +30,7 @@ function cameraStart() {
     .catch(function(error) {
         console.error("Oops. Something is broken.", error);
     });
-}// Take a picture when cameraTrigger is tapped
-cameraTrigger.onclick = function() {
-    cameraSensor.width = cameraView.videoWidth;
-    cameraSensor.height = cameraView.videoHeight;
-    cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
-    cameraOutput.src = cameraSensor.toDataURL("image/webp");
-    cameraOutput.classList.add("taken");
-};// Start the video stream when the window loads
+}
 
 /// /// ///
 
@@ -56,7 +49,7 @@ window.onload = () => {
             target_Lat,
             target_Long);
         console.log("inside geoloc loop");
-            displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
+        displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
             latitude:${position.coords.latitude};
             and you are ${distance_Device_Target} km away from target.`;
         /* window.onorientationchange = function(event) {
