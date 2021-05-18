@@ -60,7 +60,8 @@ window.onload = () => {
 
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', update, true);
-    function update(event){
+    async function update(event){
+        await sleep(1000);
         var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
         console.log(event);
         var absolute = event.absolute;
@@ -94,4 +95,8 @@ function calcCrow(lat1, lon1, lat2, lon2)
 function toRad(Value) 
 {
     return Value * Math.PI / 180;
-}
+}  
+// Sleep function
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
