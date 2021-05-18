@@ -59,6 +59,7 @@ window.onload = () => {
 /// ORIENTATION ///
 
 if (window.DeviceOrientationEvent) {
+    console.log('supported orientation');
   } else {
     console.log('device orientation not supported');
   }
