@@ -59,13 +59,17 @@ window.onload = () => {
 /// ORIENTATION ///
 
 if (window.DeviceOrientationEvent) {
-    var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
-    var absolute = DeviceOrientationEvent.absolute;
-    var alpha    = DeviceOrientationEvent.alpha;
-    var beta     = DeviceOrientationEvent.beta;
-    var gamma    = DeviceOrientationEvent.gamma;
-    console.log("inside orientation handler");
-    displayed_Logs_Orientation.innerHTML = ` Regarding Orientation : ${absolute}, ${alpha}, ${beta}, ${gamma}`;
+    window.addEventListener('deviceorientation', update, true);
+    function update(event){
+        var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
+        console.log(event);
+        var absolute = event.absolute;
+        var alpha    = event.alpha;
+        var beta     = event.beta;
+        var gamma    = event.gamma;
+        console.log("inside orientation handler");
+        displayed_Logs_Orientation.innerHTML = ` Regarding Orientation : ${absolute}, ${alpha}, ${beta}, ${gamma}`;
+    }
   } else {
     console.log('device orientation not supported');
   }
