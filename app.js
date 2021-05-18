@@ -1,7 +1,17 @@
 const log = console.log;
 
 // Set constraints for the video stream
-var constraints = { video: { facingMode: "environment" }, audio: false };// Define constants
+var constraints = {
+    audio: false,
+    video: {
+        mandatory: {
+            minWidth: 0,
+            minHeight: 0,
+            maxWidth: window.screen.width/2,
+            maxHeight: window.screen.height/2,
+            facingMode: "environment" }
+    }
+};
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
