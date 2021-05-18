@@ -2,6 +2,8 @@ const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 
+/// VIDEO STREAM PART ///
+
 // Set constraints for the video stream
 var constraints = {
     audio: false,
@@ -36,9 +38,14 @@ cameraTrigger.onclick = function() {
     cameraOutput.src = cameraSensor.toDataURL("image/webp");
     cameraOutput.classList.add("taken");
 };// Start the video stream when the window loads
-window.addEventListener("load", cameraStart, false);
 
-  window.onload = () => {
+/// /// ///
+
+window.addEventListener("load", cameraStart, false); // camera loading event
+
+/// GEOLOCATION EVENT ///
+
+window.onload = () => {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(function (position) {
         // Managing logging on the left of the screen
@@ -48,12 +55,23 @@ window.addEventListener("load", cameraStart, false);
             position.coords.longitude,
             target_Lat,
             target_Long);
-        displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
-        latitude:${position.coords.latitude};
-        and you are ${distance_Device_Target} away from target`;
+        window.onorientationchange = function(event) {
+            console.log("the orientation of the device is now " + event.target.screen.orientation.angle);
+            displayed_Logs.innerHTML = `longitude:${position.coords.longitude}; 
+            latitude:${position.coords.latitude};
+            and you are ${distance_Device_Target} km away from target. 
+            Also, orientation is ${event.target.screen.orientation.angle}`;
+        };
       });
     }
 };
+
+/// ORIENTATION EVENT ///
+
+window.onorientationchange = function(event) {
+    console.log("the orientation of the device is now " + event.target.screen.orientation.angle);
+  };
+
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
 function calcCrow(lat1, lon1, lat2, lon2) 
 {
