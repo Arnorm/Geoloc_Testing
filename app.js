@@ -46,8 +46,8 @@ window.addEventListener("load", cameraStart, false);
         // Managing form pre-filling with gps coordinates
         var lat = document.getElementById('lat');
         var long = document.getElementById('long');
-        lat.value=position.coords.latitude;
-        long.value=position.coords.longitude;
+        //lat.value=position.coords.latitude;
+        //long.value=position.coords.longitude;
       });
     }
 };
