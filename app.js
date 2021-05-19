@@ -71,12 +71,15 @@ if (window.DeviceOrientationEvent) {
     function update(event){
         var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
         console.log(event);
+        // Angles are in degrees right now
         var absolute = event.absolute;
         var alpha = event.alpha;
         var beta = event.beta;
         var gamma = event.gamma;
+        var compass_Heading = compassHeading(alpha, beta, gamma);
         console.log("inside orientation handler");
-        displayed_Logs_Orientation.innerHTML = ` Regarding Orientation : ${absolute}, ${alpha}, ${beta}, ${gamma}`;
+        displayed_Logs_Orientation.innerHTML = ` Regarding Orientation : ${absolute}, ${alpha}, ${beta}, ${gamma}.
+        The compass angle is : ${compass_Heading}`;
     }
   } else {
     console.log('device orientation not supported');
@@ -109,7 +112,7 @@ function toDegrees(radians) {
     return radians * 180 / Math.PI;
 }
   
-// Bearing formula, bewteen two 2D points
+// Bearing formula, bewteen two 2D points, clockwise angle between north and (start,dest)
 function bearing(startLat, startLng, destLat, destLng){
     startLat = toRadians(startLat);
     startLng = toRadians(startLng);
@@ -122,3 +125,32 @@ function bearing(startLat, startLng, destLat, destLng){
     brng = toDegrees(brng);
     return (brng + 360) % 360;
 }
+
+function compassHeading(alpha, beta, gamma) {
+    // Convert degrees to radians
+    var alphaRad = alpha * (Math.PI / 180);
+    var betaRad = beta * (Math.PI / 180);
+    var gammaRad = gamma * (Math.PI / 180);
+    // Calculate equation components
+    var cA = Math.cos(alphaRad);
+    var sA = Math.sin(alphaRad);
+    var cB = Math.cos(betaRad);
+    var sB = Math.sin(betaRad);
+    var cG = Math.cos(gammaRad);
+    var sG = Math.sin(gammaRad);
+    // Calculate A, B, C rotation components
+    var rA = - cA * sG - sA * sB * cG;
+    var rB = - sA * sG + cA * sB * cG;
+    var rC = - cB * cG;
+    // Calculate compass heading
+    var compassHeading = Math.atan(rA / rB);
+    // Convert from half unit circle to whole unit circle
+    if(rB < 0) {
+      compassHeading += Math.PI;
+    }else if(rA < 0) {
+      compassHeading += 2 * Math.PI;
+    }
+    // Convert radians to degrees
+    compassHeading *= 180 / Math.PI;
+    return compassHeading;
+  }
