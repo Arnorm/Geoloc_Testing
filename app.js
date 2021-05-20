@@ -3,6 +3,10 @@ const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
+var bearing_Device_Target = 0;
+
+// Angles declared as globals for now
+
 
 var constraints = {
     audio: false,
@@ -98,7 +102,7 @@ function handler_Orientation(e) {
 }
 
 function handler_Location(position) {
-    var bearing_Device_Target = bearing(
+    bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
         target_Lat,
