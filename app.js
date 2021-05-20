@@ -22,9 +22,9 @@ const cameraView = document.querySelector("#camera--view"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
 
-//window.addEventListener("load", cameraStart, false); // camera loading event
+window.addEventListener("load", cameraStart, false); // camera loading event
 
-/*
+
 function cameraStart() {
 navigator.mediaDevices
     .getUserMedia(constraints)
@@ -36,7 +36,6 @@ navigator.mediaDevices
     console.error("Oops. Something is broken.", error);
 });
 }
-*/
 
     /// GEOLOCATION EVENT ///
 /*
@@ -65,6 +64,73 @@ window.onload = () => {
     }
 };
 */
+
+
+
+const isIOS =
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/);
+
+function init() {
+    navigator.geolocation.getCurrentPosition(locationHandler);
+
+    if (!isIOS) {
+    window.addEventListener("deviceorientationabsolute", handler, true);
+    }
+}
+
+function startCompass() {
+    if (isIOS) {
+    DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+        if (response === "granted") {
+            window.addEventListener("deviceorientation", handler, true);
+        } else {
+            alert("has to be allowed!");
+        }
+        })
+        .catch(() => alert("not supported"));
+    }
+}
+
+function handler(e) {
+    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+    displayed_Logs_Orientation.innerHTML = `we are here and updated ${compass}`;
+}
+
+let pointDegree;
+
+function locationHandler(position) {
+    const { latitude, longitude } = position.coords;
+    pointDegree = calcDegreeToPoint(latitude, longitude);
+
+    if (pointDegree < 0) {
+    pointDegree = pointDegree + 360;
+    }
+}
+
+function calcDegreeToPoint(latitude, longitude) {
+    // Qibla geolocation
+    const point = {
+        lat: 21.422487,
+        lng: 39.826206
+    };
+
+    const phiK = (point.lat * Math.PI) / 180.0;
+    const lambdaK = (point.lng * Math.PI) / 180.0;
+    const phi = (latitude * Math.PI) / 180.0;
+    const lambda = (longitude * Math.PI) / 180.0;
+    const psi =
+        (180.0 / Math.PI) *
+        Math.atan2(
+        Math.sin(lambdaK - lambda),
+        Math.cos(phi) * Math.tan(phiK) -
+            Math.sin(phi) * Math.cos(lambdaK - lambda)
+        );
+    return Math.round(psi);
+}
+
+init();
 
 /// /// AUXILIARIES /// ///
 
@@ -136,68 +202,3 @@ function compassHeading(alpha, beta, gamma) {
     compassHeading *= 180 / Math.PI;
     return compassHeading;
 }
-
-const isIOS =
-    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-    navigator.userAgent.match(/AppleWebKit/);
-
-function init() {
-    navigator.geolocation.getCurrentPosition(locationHandler);
-
-    if (!isIOS) {
-    window.addEventListener("deviceorientationabsolute", handler, true);
-    }
-}
-
-function startCompass() {
-    if (isIOS) {
-    DeviceOrientationEvent.requestPermission()
-        .then((response) => {
-        if (response === "granted") {
-            window.addEventListener("deviceorientation", handler, true);
-        } else {
-            alert("has to be allowed!");
-        }
-        })
-        .catch(() => alert("not supported"));
-    }
-}
-
-function handler(e) {
-    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-    displayed_Logs_Orientation.innerHTML = `we are here but ${compass}`;
-}
-
-let pointDegree;
-
-function locationHandler(position) {
-    const { latitude, longitude } = position.coords;
-    pointDegree = calcDegreeToPoint(latitude, longitude);
-
-    if (pointDegree < 0) {
-    pointDegree = pointDegree + 360;
-    }
-}
-
-function calcDegreeToPoint(latitude, longitude) {
-    // Qibla geolocation
-    const point = {
-        lat: 21.422487,
-        lng: 39.826206
-    };
-
-    const phiK = (point.lat * Math.PI) / 180.0;
-    const lambdaK = (point.lng * Math.PI) / 180.0;
-    const phi = (latitude * Math.PI) / 180.0;
-    const lambda = (longitude * Math.PI) / 180.0;
-    const psi =
-        (180.0 / Math.PI) *
-        Math.atan2(
-        Math.sin(lambdaK - lambda),
-        Math.cos(phi) * Math.tan(phiK) -
-            Math.sin(phi) * Math.cos(lambdaK - lambda)
-        );
-    return Math.round(psi);
-}
-
-init();
