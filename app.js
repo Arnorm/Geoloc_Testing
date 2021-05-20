@@ -97,8 +97,8 @@ function startCompass() {
 
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-    var delta_Angle = 360 - bearing_Device_Target + compass;
-    displayed_Logs_Orientation.innerHTML = `we are here and deltaAngle is ${delta_Angle}`;
+    var delta_Angle = bearing_Device_Target - compass;
+    displayed_Logs_Orientation.innerHTML = `we aare here and deltaAngle is ${delta_Angle}`;
 }
 
 function handler_Location(position) {
