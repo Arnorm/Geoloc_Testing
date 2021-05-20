@@ -63,7 +63,7 @@ function startCompass() {
 }
 
     /// GEOLOCATION EVENT ///
-
+/*
 window.onload = () => {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(function (position) {
@@ -88,6 +88,7 @@ window.onload = () => {
       });
     }
 };
+*/
 
 function handler(e) {
     displayed_Logs_Orientation.innerHTML = `Inside the orientation event`;
