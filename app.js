@@ -45,7 +45,6 @@ const isIOS =
 function init() {
     navigator.geolocation.getCurrentPosition(locationHandler);
     if (!isIOS) {
-    displayed_Logs_Orientation.innerHTML = `Listening to deviceorientationabsolute`;
     window.addEventListener("deviceorientationabsolute", handler, true);
     }
 }
@@ -95,8 +94,7 @@ window.onload = () => {
 
 function handler(e) {
     displayed_Logs_Orientation.innerHTML = `Inside the orientation event`;
-    compass = e.webkitCompassHeading;
-    // || Math.abs(e.alpha - 360);
+    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
     displayed_Logs_Orientation.innerHTML = `we are ${compass}`;
 }
 
