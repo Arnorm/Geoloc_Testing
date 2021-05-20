@@ -165,7 +165,7 @@ function startCompass() {
 
 function handler(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-    displayed_Logs_Orientation.innerHTML = `we are ${compass}`;
+    displayed_Logs_Orientation.innerHTML = `we are here but ${compass}`;
 }
 
 let pointDegree;
