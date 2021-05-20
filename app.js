@@ -13,7 +13,7 @@ var constraints = {
             minHeight: 0,
             maxWidth: window.screen.width/2,
             maxHeight: window.screen.height/2,
-            facingMode: environment
+            facingMode: {exact: environment}
             }
     }
 };
