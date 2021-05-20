@@ -1,12 +1,7 @@
-/* TESTING OTHER WAY 
-
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
-
-/// VIDEO STREAM PART ///
-
-// Set constraints for the video stream
+const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var constraints = {
     audio: false,
     video: {
@@ -25,28 +20,51 @@ const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
+
+    window.addEventListener("load", cameraStart, false); // camera loading event
+
 function cameraStart() {
-    navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function(stream) {
-        track = stream.getTracks()[0];
-        cameraView.srcObject = stream;
-    })
-    .catch(function(error) {
-        console.error("Oops. Something is broken.", error);
-    });
+navigator.mediaDevices
+    .getUserMedia(constraints)
+    .then(function(stream) {
+    track = stream.getTracks()[0];
+    cameraView.srcObject = stream;
+})
+.catch(function(error) {
+    console.error("Oops. Something is broken.", error);
+});
 }
 
-/// /// ///
+const isIOS =
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/);
 
-window.addEventListener("load", cameraStart, false); // camera loading event
+function init() {
+    navigator.geolocation.getCurrentPosition(locationHandler);
+    if (!isIOS) {
+    window.addEventListener("deviceorientationabsolute", handler, true);
+    }
+}
 
-/// GEOLOCATION EVENT ///
+function startCompass() {
+    if (isIOS) {
+    DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+        if (response === "granted") {
+            window.addEventListener("deviceorientation", handler, true);
+        } else {
+            alert("has to be allowed!");
+        }
+        })
+        .catch(() => alert("not supported"));
+    }
+}
+
+    /// GEOLOCATION EVENT ///
 
 window.onload = () => {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(function (position) {
-        // Managing logging on the left of the screen
         var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
         var bearing_Device_Target = bearing(
             position.coords.latitude,
@@ -69,27 +87,13 @@ window.onload = () => {
     }
 };
 
-/// ORIENTATION ///
+function handler(e) {
+    compass = e.webkitCompassHeading;
+    // || Math.abs(e.alpha - 360);
+    displayed_Logs_Orientation.innerHTML = `we are ${compass}`;
+}
 
-if (window.DeviceOrientationEvent) {
-    window.addEventListener("deviceorientationabsolute", handler, true);
-    //window.addEventListener('deviceorientation', update, true);
-    function update(event){
-        compass = event.webkitCompassHeading || Math.abs(e.alpha - 360);
-        var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
-        console.log(event);
-        // Angles are in degrees right now
-        var absolute = event.absolute;
-        var alpha = event.alpha;
-        var beta = event.beta;
-        var gamma = event.gamma;
-        var compass_Heading = compassHeading(alpha, beta, gamma);
-        console.log("inside orientation handler");
-        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading} and alpha is : ${alpha} and beta is : ${beta} and gamma is : ${gamma} and compass : ${compass}`;
-    }
-  } else {
-    console.log('device orientation not supported');
-  }
+init();
 
 /// /// AUXILIARIES /// ///
 
@@ -132,6 +136,7 @@ function bearing(startLat, startLng, destLat, destLng){
     return (brng + 360) % 360;
 }
 
+// Compass heading (not used at the moment)
 function compassHeading(alpha, beta, gamma) {
     // Convert degrees to radians
     var alphaRad = alpha * (Math.PI / 180);
@@ -160,69 +165,3 @@ function compassHeading(alpha, beta, gamma) {
     compassHeading *= 180 / Math.PI;
     return compassHeading;
   }
-
-  */
-  const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
-
-    const isIOS =
-      navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-      navigator.userAgent.match(/AppleWebKit/);
-
-    function init() {
-      navigator.geolocation.getCurrentPosition(locationHandler);
-      if (!isIOS) {
-        window.addEventListener("deviceorientationabsolute", handler, true);
-      }
-    }
-
-    function startCompass() {
-      if (isIOS) {
-        DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response === "granted") {
-              window.addEventListener("deviceorientation", handler, true);
-            } else {
-              alert("has to be allowed!");
-            }
-          })
-          .catch(() => alert("not supported"));
-      }
-    }
-
-    function handler(e) {
-      compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-      displayed_Logs_Orientation.innerHTML = `we are ${compass}`;
-    }
-
-    let pointDegree;
-
-    function locationHandler(position) {
-      const { latitude, longitude } = position.coords;
-      pointDegree = calcDegreeToPoint(latitude, longitude);
-
-      if (pointDegree < 0) {
-        pointDegree = pointDegree + 360;
-      }
-    }
-
-    function calcDegreeToPoint(latitude, longitude) {
-      // Qibla geolocation
-      const point = {
-        lat: 21.422487,
-        lng: 39.826206
-      };
-
-      const phiK = (point.lat * Math.PI) / 180.0;
-      const lambdaK = (point.lng * Math.PI) / 180.0;
-      const phi = (latitude * Math.PI) / 180.0;
-      const lambda = (longitude * Math.PI) / 180.0;
-      const psi =
-        (180.0 / Math.PI) *
-        Math.atan2(
-          Math.sin(lambdaK - lambda),
-          Math.cos(phi) * Math.tan(phiK) -
-            Math.sin(phi) * Math.cos(lambdaK - lambda)
-        );
-      return Math.round(psi);
-    }
-    init();
