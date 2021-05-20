@@ -22,7 +22,7 @@ const cameraView = document.querySelector("#camera--view"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
 
-window.addEventListener("load", cameraStart, false); // camera loading event
+//window.addEventListener("load", cameraStart, false); // camera loading event
 
 function cameraStart() {
 navigator.mediaDevices
@@ -49,6 +49,7 @@ function init() {
 }
 
 function startCompass() {
+    displayed_Logs_Orientation.innerHTML = `Starting compass`;
     if (isIOS) {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
