@@ -16,7 +16,7 @@ var constraints = {
             },
             // Video is broken because of this on mobile, need to automatically take rear camera
             // Might be solved when using AR lib that will handle video
-            facingMode: "environment"
+            //facingMode: "environment"
     }
 };
 const cameraView = document.querySelector("#camera--view"),
