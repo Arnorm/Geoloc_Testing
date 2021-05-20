@@ -2,6 +2,7 @@ const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
+
 var constraints = {
     audio: false,
     video: {
@@ -21,7 +22,7 @@ const cameraView = document.querySelector("#camera--view"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
 
-    window.addEventListener("load", cameraStart, false); // camera loading event
+window.addEventListener("load", cameraStart, false); // camera loading event
 
 function cameraStart() {
 navigator.mediaDevices
@@ -42,6 +43,7 @@ const isIOS =
 function init() {
     navigator.geolocation.getCurrentPosition(locationHandler);
     if (!isIOS) {
+    displayed_Logs_Orientation.innerHTML = `Listening to deviceorientationabsolute`;
     window.addEventListener("deviceorientationabsolute", handler, true);
     }
 }
@@ -88,6 +90,7 @@ window.onload = () => {
 };
 
 function handler(e) {
+    displayed_Logs_Orientation.innerHTML = `Inside the orientation event`;
     compass = e.webkitCompassHeading;
     // || Math.abs(e.alpha - 360);
     displayed_Logs_Orientation.innerHTML = `we are ${compass}`;
