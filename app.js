@@ -76,18 +76,12 @@ if (window.DeviceOrientationEvent) {
         console.log(event);
         // Angles are in degrees right now
         var absolute = event.absolute;
-        var alpha = round(event.alpha);
-        var beta = round(event.beta);
-        var gamma = round(event.gamma);
+        var alpha = event.alpha;
+        var beta = event.beta;
+        var gamma = event.gamma;
         var compass_Heading = compassHeading(alpha, beta, gamma);
         console.log("inside orientation handler");
-        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading}`
-        + "<br />" + 
-        `and alpha is : ${alpha}`
-        + "<br />" + 
-        `and beta is : ${beta}`
-        + "<br />" + 
-        `and gamma is : ${gamma}`;
+        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading} and alpha is : ${alpha} and beta is : ${beta}cand gamma is : ${gamma}`;
     }
   } else {
     console.log('device orientation not supported');
