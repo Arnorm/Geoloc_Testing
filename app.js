@@ -98,6 +98,17 @@ function handler(e) {
     displayed_Logs_Orientation.innerHTML = `we are ${compass}`;
 }
 
+let pointDegree;
+
+    function locationHandler(position) {
+      const { latitude, longitude } = position.coords;
+      pointDegree = calcDegreeToPoint(latitude, longitude);
+
+      if (pointDegree < 0) {
+        pointDegree = pointDegree + 360;
+      }
+    }
+
 init();
 
 /// /// AUXILIARIES /// ///
