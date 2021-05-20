@@ -24,6 +24,7 @@ const cameraView = document.querySelector("#camera--view"),
 
 //window.addEventListener("load", cameraStart, false); // camera loading event
 
+/*
 function cameraStart() {
 navigator.mediaDevices
     .getUserMedia(constraints)
@@ -35,6 +36,7 @@ navigator.mediaDevices
     console.error("Oops. Something is broken.", error);
 });
 }
+*/
 
 const isIOS =
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
