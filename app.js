@@ -1,6 +1,18 @@
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
+/* WIP -----
+const isIOS =
+      navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+      navigator.userAgent.match(/AppleWebKit/);
+
+function init() {
+    if (!isIOS) {
+        window.addEventListener("deviceorientationabsolute", handler, true);
+    }
+}
+*/
+
 
 /// VIDEO STREAM PART ///
 
@@ -72,7 +84,7 @@ window.onload = () => {
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', update, true);
     function update(event){
-        //compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+        compass = event.webkitCompassHeading || Math.abs(e.alpha - 360);
         var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
         console.log(event);
         // Angles are in degrees right now
@@ -82,7 +94,7 @@ if (window.DeviceOrientationEvent) {
         var gamma = event.gamma;
         var compass_Heading = compassHeading(alpha, beta, gamma);
         console.log("inside orientation handler");
-        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading} and alpha is : ${alpha} and beta is : ${beta} and gamma is : ${gamma}`;
+        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading} and alpha is : ${alpha} and beta is : ${beta} and gamma is : ${gamma} and compass : ${compass}`;
     }
   } else {
     console.log('device orientation not supported');
