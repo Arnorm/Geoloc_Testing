@@ -71,10 +71,9 @@ const isIOS =
     navigator.userAgent.match(/AppleWebKit/);
 
 function init() {
-    //navigator.geolocation.getCurrentPosition(locationHandler);
-
+    navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
-    window.addEventListener("deviceorientationabsolute", handler, true);
+    window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
 }
 
@@ -83,7 +82,7 @@ function startCompass() {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
         if (response === "granted") {
-            window.addEventListener("deviceorientation", handler, true);
+            window.addEventListener("deviceorientation", handler_Orientation, true);
         } else {
             alert("has to be allowed!");
         }
@@ -92,9 +91,29 @@ function startCompass() {
     }
 }
 
-function handler(e) {
+function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-    displayed_Logs_Orientation.innerHTML = `we are here and removed location handling ${compass}`;
+    displayed_Logs_Orientation.innerHTML = `we are here and reinstated old location ${compass}`;
+}
+
+function locationHandler(position) {
+    var bearing_Device_Target = bearing(
+        position.coords.latitude,
+        position.coords.longitude,
+        target_Lat,
+        target_Long
+    );
+    var distance_Device_Target = calcCrow(
+        position.coords.latitude,
+        position.coords.longitude,
+        target_Lat,
+        target_Long
+    );
+    console.log("inside geoloc loop");
+    displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
+        latitude:${position.coords.latitude};
+        and you are ${distance_Device_Target} km away from target.
+        Also, bearing is : ${bearing_Device_Target}`;
 }
 
 init();
