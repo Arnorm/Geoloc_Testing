@@ -96,7 +96,7 @@ function handler_Orientation(e) {
     displayed_Logs_Orientation.innerHTML = `we are here and reinstated old location ${compass}`;
 }
 
-function locationHandler(position) {
+function handler_Location(position) {
     var bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
