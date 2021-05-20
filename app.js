@@ -14,6 +14,8 @@ var constraints = {
             maxWidth: window.screen.width/2,
             maxHeight: window.screen.height/2,
             },
+            // Video is broken because of this on mobile, need to automatically take rear camera
+            // Might be solved when using AR lib that will handle video
             facingMode: "environment"
     }
 };
@@ -74,13 +76,18 @@ if (window.DeviceOrientationEvent) {
         console.log(event);
         // Angles are in degrees right now
         var absolute = event.absolute;
-        var alpha = event.alpha;
-        var beta = event.beta;
-        var gamma = event.gamma;
+        var alpha = round(event.alpha);
+        var beta = round(event.beta);
+        var gamma = round(event.gamma);
         var compass_Heading = compassHeading(alpha, beta, gamma);
         console.log("inside orientation handler");
-        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading}
-        and alpha is : ${alpha}`;
+        displayed_Logs_Orientation.innerHTML = `The compass angle is : ${compass_Heading}`
+        + "<br />" + 
+        `and alpha is : ${alpha}`
+        + "<br />" + 
+        `and beta is : ${beta}`
+        + "<br />" + 
+        `and gamma is : ${gamma}`;
     }
   } else {
     console.log('device orientation not supported');
