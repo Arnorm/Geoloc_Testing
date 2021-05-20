@@ -2,6 +2,7 @@ const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
+var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
 
 var constraints = {
     audio: false,
@@ -65,14 +66,12 @@ window.onload = () => {
 };
 */
 
-
-
 const isIOS =
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
 
 function init() {
-    navigator.geolocation.getCurrentPosition(locationHandler);
+    //navigator.geolocation.getCurrentPosition(locationHandler);
 
     if (!isIOS) {
     window.addEventListener("deviceorientationabsolute", handler, true);
@@ -95,39 +94,7 @@ function startCompass() {
 
 function handler(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
-    displayed_Logs_Orientation.innerHTML = `we are here and updated ${compass}`;
-}
-
-let pointDegree;
-
-function locationHandler(position) {
-    const { latitude, longitude } = position.coords;
-    pointDegree = calcDegreeToPoint(latitude, longitude);
-
-    if (pointDegree < 0) {
-    pointDegree = pointDegree + 360;
-    }
-}
-
-function calcDegreeToPoint(latitude, longitude) {
-    // Qibla geolocation
-    const point = {
-        lat: 21.422487,
-        lng: 39.826206
-    };
-
-    const phiK = (point.lat * Math.PI) / 180.0;
-    const lambdaK = (point.lng * Math.PI) / 180.0;
-    const phi = (latitude * Math.PI) / 180.0;
-    const lambda = (longitude * Math.PI) / 180.0;
-    const psi =
-        (180.0 / Math.PI) *
-        Math.atan2(
-        Math.sin(lambdaK - lambda),
-        Math.cos(phi) * Math.tan(phiK) -
-            Math.sin(phi) * Math.cos(lambdaK - lambda)
-        );
-    return Math.round(psi);
+    displayed_Logs_Orientation.innerHTML = `we are here and removed location handling ${compass}`;
 }
 
 init();
