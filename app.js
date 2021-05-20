@@ -101,7 +101,7 @@ function handler_Orientation(e) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     displayed_Logs_Orientation.innerHTML = `Angle compass is : ${compass} 
-     we are here and deltaAngle is ${min_Angle}`;
+     we are here and deltaAngle iis ${min_Angle.toFixed(0)}`;
 }
 
 function handler_Location(position) {
