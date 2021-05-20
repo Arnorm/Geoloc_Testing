@@ -96,9 +96,11 @@ function startCompass() {
 }
 
 function handler_Orientation(e) {
-    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+    compass = e.webkitCompassHeading;
+    //|| Math.abs(e.alpha - 360);
     var delta_Angle = bearing_Device_Target - compass;
-    displayed_Logs_Orientation.innerHTML = `we aare here and deltaAngle is ${delta_Angle}`;
+    displayed_Logs_Orientation.innerHTML = `Angle compass is : ${compass} 
+     we aare here and deltaAngle is ${delta_Angle}`;
 }
 
 function handler_Location(position) {
