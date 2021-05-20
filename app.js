@@ -82,7 +82,8 @@ window.onload = () => {
 /// ORIENTATION ///
 
 if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', update, true);
+    window.addEventListener("deviceorientationabsolute", handler, true);
+    //window.addEventListener('deviceorientation', update, true);
     function update(event){
         compass = event.webkitCompassHeading || Math.abs(e.alpha - 360);
         var displayed_Logs_Orientation = document.getElementById('logs_Orientation');
