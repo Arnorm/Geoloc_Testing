@@ -38,3 +38,12 @@ html, body{
     right: 20px;
     z-index: 2;
 }
+.centered_div {
+    width: 200px;
+    height: 200px;
+    background: #0088cc;
+    padding: 2%;
+    display: table-cell;
+    text-align: center;
+    vertical-align: bottom;
+}
