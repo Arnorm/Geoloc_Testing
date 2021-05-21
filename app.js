@@ -67,6 +67,9 @@ function handler_Orientation(e) {
         visualisation_Target.innerHTML = `Here we are within the cone (limit angle beeing : ${angle_Treshold}) 
         so we may Display some information about the object, like size, color, picture ...`;
     }
+    else{
+        visualisation_Target.innerHTML = ``;
+    }
 }
 
 function handler_Location(position) {
