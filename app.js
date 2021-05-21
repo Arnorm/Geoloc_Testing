@@ -4,6 +4,7 @@ const target_Lat = 48.87397517044594;
 const angle_Treshold = 10; // To be changed later, maybe even based on the camera of the device
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
+const visualisation_Target = document.getElementById('visualisation_Target');
 var bearing_Device_Target = 0; // Angles declared as globals for now
 var constraints = {
     audio: false,
@@ -61,7 +62,11 @@ function handler_Orientation(e) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     displayed_Logs_Orientation.innerHTML = `Angle compass is : ${compass} 
-     we are here and deltaAngle iis ${min_Angle.toFixed(0)}`;
+     we are here and deltaAngle is ${min_Angle.toFixed(0)}`;
+    if(min_Angle<angle_Treshold){
+        visualisation_Target.innerHTML = `Here we are within the cone (limit angle beeing : ${angle_Treshold}) 
+        so we may Display some information about the object, like size, color, picture ...`;
+    }
 }
 
 function handler_Location(position) {
