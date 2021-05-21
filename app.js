@@ -7,17 +7,11 @@ var bearing_Device_Target = 0; // Angles declared as globals for now
 
 var constraints = {
     audio: false,
-    video: {
-        mandatory: {
-            minWidth: 0,
-            minHeight: 0,
-            maxWidth: window.screen.width/2,
-            maxHeight: window.screen.height/2,
-            },
+    video: true,
+    facingMode: { exact: 'environment' }
         // Video is broken because of this on mobile, need to automatically take rear camera
         // Might be solved when using AR lib that will handle video
-        facingMode: "environment"
-    }
+        //facingMode: "environment"
 };
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
