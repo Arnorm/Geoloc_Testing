@@ -1,28 +1,26 @@
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
+const angle_Treshold = 10; // To be changed later, maybe even based on the camera of the device
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
 var bearing_Device_Target = 0; // Angles declared as globals for now
-
 var constraints = {
     audio: false,
     video: {
         facingMode: {
           exact: "environment"
         }
-      }
-    // Video is broken because of this on mobile, need to automatically take rear camera
-    // Might be solved when using AR lib that will handle video
-    //facingMode: "environment"
+    }
 };
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
-
 window.addEventListener("load", cameraStart, false); // camera loading event
-
+const isIOS =
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/);
 
 function cameraStart() {
 navigator.mediaDevices
@@ -35,10 +33,6 @@ navigator.mediaDevices
     console.error("Oops. Something is broken.", error);
 });
 }
-
-const isIOS =
-    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-    navigator.userAgent.match(/AppleWebKit/);
 
 function init() {
     navigator.geolocation.watchPosition(handler_Location);
