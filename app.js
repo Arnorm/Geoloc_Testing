@@ -3,10 +3,7 @@ const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
-var bearing_Device_Target = 0;
-
-// Angles declared as globals for now
-
+var bearing_Device_Target = 0; // Angles declared as globals for now
 
 var constraints = {
     audio: false,
@@ -17,9 +14,9 @@ var constraints = {
             maxWidth: window.screen.width/2,
             maxHeight: window.screen.height/2,
             },
-            // Video is broken because of this on mobile, need to automatically take rear camera
-            // Might be solved when using AR lib that will handle video
-            //facingMode: "environment"
+        // Video is broken because of this on mobile, need to automatically take rear camera
+        // Might be solved when using AR lib that will handle video
+        facingMode: "environment"
     }
 };
 const cameraView = document.querySelector("#camera--view"),
@@ -41,34 +38,6 @@ navigator.mediaDevices
     console.error("Oops. Something is broken.", error);
 });
 }
-
-    /// GEOLOCATION EVENT ///
-/*
-window.onload = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(function (position) {
-        var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
-        var bearing_Device_Target = bearing(
-            position.coords.latitude,
-            position.coords.longitude,
-            target_Lat,
-            target_Long
-        );
-        var distance_Device_Target = calcCrow(
-            position.coords.latitude,
-            position.coords.longitude,
-            target_Lat,
-            target_Long
-        );
-        console.log("inside geoloc loop");
-        displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
-            latitude:${position.coords.latitude};
-            and you are ${distance_Device_Target} km away from target.
-            Also, bearing is : ${bearing_Device_Target}`;
-      });
-    }
-};
-*/
 
 const isIOS =
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
