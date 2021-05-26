@@ -1,3 +1,7 @@
+// File that will handle every operation related to geolocation and display
+
+// Variables //
+
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
@@ -10,7 +14,7 @@ var constraints = {
     audio: false,
     video: {
         facingMode: {
-          exact: "environment"
+          exact: "environment" // remove this one if tested in a laptop because it require rear camera
         }
     }
 };
@@ -19,10 +23,11 @@ const cameraView = document.querySelector("#camera--view"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
 window.addEventListener("load", cameraStart, false); // camera loading event
-const isIOS =
+const isIOS = // different handlings
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
 
+// Handling the video flux
 function cameraStart() {
 navigator.mediaDevices
     .getUserMedia(constraints)
@@ -42,6 +47,7 @@ function init() {
     }
 }
 
+// Need to activate compass sensor on device to get orientation
 function startCompass() {
     if (isIOS) {
     DeviceOrientationEvent.requestPermission()
@@ -57,19 +63,11 @@ function startCompass() {
 }
 
 function handler_Orientation(e) {
-    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
-    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
-    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     displayed_Logs_Orientation.innerHTML = `Angle compass is : ${compass} 
      we are here and deltaAngle is ${min_Angle.toFixed(0)}`;
-    if(min_Angle<angle_Treshold){
-        visualisation_Target.innerHTML = `Here we are within the cone (limit angle beeing : ${angle_Treshold}) 
-        so we may Display some information about the object, like size, color, picture ...`;
-    }
-    else{
-        visualisation_Target.innerHTML = ``;
-    }
+    handler_Display(delta_Angle);
 }
 
 function handler_Location(position) {
@@ -92,20 +90,34 @@ function handler_Location(position) {
         Also, bearing is : ${bearing_Device_Target}`;
 }
 
+// This function aims at handling the display
+// Arguments are to be added later (eventually, relative angle will be usefull)
+function handler_Display(delta_Angle) {
+    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
+    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
+    if(min_Angle<angle_Treshold){
+        visualisation_Target.innerHTML = `Here we are within the cone (limit angle beeing : ${angle_Treshold}) 
+        so we may Display some information about the object, like size, color, picture ...`;
+    }
+    else{
+        visualisation_Target.innerHTML = ``;
+    }
+}
+
 init();
 
 /// /// AUXILIARIES /// ///
 
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
-function calcCrow(lat1, lon1, lat2, lon2) 
+function calcCrow(startLat, startLng, destLat, destLng) 
 {
     var R = 6371; // km
-    var dLat = toRadians(lat2-lat1);
-    var dLon = toRadians(lon2-lon1);
-    var lat1 = toRadians(lat1);
-    var lat2 = toRadians(lat2);
+    var dLat = toRadians(destLat-startLat);
+    var dLon = toRadians(destLng-startLng);
+    var startLat = toRadians(startLat);
+    var destLat = toRadians(destLat);
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(startLat) * Math.cos(destLat); 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     var d = R * c;
     return d;
@@ -130,9 +142,9 @@ function bearing(startLat, startLng, destLat, destLng){
     y = Math.sin(destLng - startLng) * Math.cos(destLat);
     x = Math.cos(startLat) * Math.sin(destLat) -
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
-    brng = Math.atan2(y, x);
-    brng = toDegrees(brng);
-    return (brng + 360) % 360;
+    bearing_ = Math.atan2(y, x);
+    bearing_ = toDegrees(bearing_);
+    return (bearing_ + 360) % 360;
 }
 
 // Compass heading (not used at the moment)
