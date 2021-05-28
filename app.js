@@ -5,7 +5,7 @@
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
-const angle_Treshold = 10; // To be changed later, maybe even based on the camera of the device
+const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
 const visualisation_Target = document.getElementById('visualisation_Target');
