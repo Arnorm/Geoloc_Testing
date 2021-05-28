@@ -1,6 +1,6 @@
 // File that will handle every operation related to geolocation and display
 
-import * as THREE from './node_modules/build/three.module.js';
+import * as THREE from '.\node_modules\three\build\three.module.js';
 const scene = new THREE.Scene();
 
 // Variables //
