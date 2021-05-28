@@ -1,7 +1,9 @@
 // File that will handle every operation related to geolocation and display
 
-// Variables //
+import * as THREE from '../build/three.module.js';
+const scene = new THREE.Scene();
 
+// Variables //
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;

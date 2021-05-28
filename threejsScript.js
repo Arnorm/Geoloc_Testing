@@ -1,5 +1,6 @@
 // Pasted file from https://github.com/mrdoob/three.js/blob/dev/examples/webxr_ar_hittest.html
-// The goal is then to adapt this logic to our application, so that we may have the same 
+// The goal is then to adapt this logic to our application, so that we may have the same AR
+// effects, but ideally the objects would be automatically placed within the image
 
 // Change imports ...
 import * as THREE from '../build/three.module.js';
