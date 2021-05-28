@@ -5,7 +5,7 @@
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
-const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
+const angle_Treshold = 30; // To be changed later, maybe even based on the camera of the device
 const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
 var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
 const visualisation_Target = document.getElementById('visualisation_Target');
@@ -65,7 +65,7 @@ function startCompass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
-    displayed_Logs_Orientation.innerHTML = `Angle compass is : ${compass}, we are in orientation still`;
+    displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
     handler_Display(delta_Angle);
 }
 
@@ -95,11 +95,12 @@ function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if(min_Angle<angle_Treshold){
-        visualisation_Target.innerHTML = `Here we are within the cone (limit angle being : ${angle_Treshold}) 
+        visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.
+         Here we are within the cone (limit angle being : ${angle_Treshold}) 
         so we may Display some information about the object, like size, color, picture ...`;
     }
     else{
-        visualisation_Target.innerHTML = ``;
+        visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
     }
 }
 
