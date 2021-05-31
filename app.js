@@ -20,6 +20,9 @@ var constraints = {
         }
     }
 };
+var constraints_navig = {
+    audio: false
+};
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
@@ -32,7 +35,7 @@ const isIOS = // different handlings
 // Handling the video flux
 function cameraStart() {
 navigator.mediaDevices
-    .getUserMedia(constraints)
+    .getUserMedia(constraints_navig)
     .then(function(stream) {
     track = stream.getTracks()[0];
     cameraView.srcObject = stream;
