@@ -22,7 +22,11 @@ var constraints = {
 };
 var constraints_navig = {
     audio: false,
-    video: true
+    video: {
+        facingMode: {
+          exact: "user" // laptop line
+        }
+    }
 };
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
@@ -55,6 +59,7 @@ function init() {
 
 // Need to activate compass sensor on device to get orientation
 function startCompass() {
+    /*
     if (isIOS) {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
@@ -66,13 +71,16 @@ function startCompass() {
         })
         .catch(() => alert("not supported"));
     }
+    */
 }
 
 function handler_Orientation(e) {
+    /*
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
     displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
     handler_Display(delta_Angle);
+    */
 }
 
 function handler_Location(position) {
@@ -98,6 +106,7 @@ function handler_Location(position) {
 // This function aims at handling the display
 // Arguments are to be added later (eventually, relative angle will be useful)
 function handler_Display(delta_Angle) {
+    /*
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if(min_Angle<angle_Treshold){
@@ -108,6 +117,7 @@ function handler_Display(delta_Angle) {
     else{
         visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
     }
+    */
 }
 
 init();
