@@ -2,6 +2,7 @@
 
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
+console.log("we have the scene");
 
 // Variables //
 const log = console.log;
@@ -84,6 +85,7 @@ function handler_Orientation(e) {
 }
 
 function handler_Location(position) {
+/*
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
