@@ -40,6 +40,7 @@ const isIOS = // different handlings
 
 // Handling the video flux
 function cameraStart() {
+    /*
 navigator.mediaDevices
     .getUserMedia(constraints)
     .then(function(stream) {
@@ -49,13 +50,16 @@ navigator.mediaDevices
 .catch(function(error) {
     console.error("Oops. Something is broken.", error);
 });
+*/
 }
 
 function init() {
+    /*
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
+    */
 }
 
 // Need to activate compass sensor on device to get orientation
