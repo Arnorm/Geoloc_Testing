@@ -36,7 +36,7 @@ const isIOS = // different handlings
 // Handling the video flux
 function cameraStart() {
 navigator.mediaDevices
-    .getUserMedia(constraints_navig)
+    .getUserMedia(constraints)
     .then(function(stream) {
     track = stream.getTracks()[0];
     cameraView.srcObject = stream;
