@@ -22,9 +22,7 @@ var constraints = {
 };
 var constraints_navig = {
     audio: false,
-    video: {
-        facingMode: { exact: "user" }
-    }
+    video: true
 };
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
