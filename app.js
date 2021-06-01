@@ -4,7 +4,7 @@
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
-logs_Mobile.innerHTML = `ThreeJs Imported.`;
+logs_Mobile.innerHTML = `ThreeJs Importedd.`;
 /// ///
 
 // Variables //
@@ -28,12 +28,14 @@ const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
     cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
-window.addEventListener("load", cameraStart, false); // camera loading event
+
 const isIOS = // different handlings
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
 
-// Handling the video flux
+window.addEventListener("load", cameraStart, false); // camera loading event
+
+// Handling the video flux, triggered by "load" event
 function cameraStart() {
     navigator.mediaDevices
         .getUserMedia(constraints)
@@ -49,11 +51,12 @@ function cameraStart() {
 function init() {
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
-    window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
+    // if not on IOS, we add this listener to handle Orientation
+        window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
 }
 
-// Need to activate compass sensor on device to get orientation
+// Need to activate compass sensor on device to get orientation on IOS
 function startCompass() {
     if (isIOS) {
     DeviceOrientationEvent.requestPermission()
