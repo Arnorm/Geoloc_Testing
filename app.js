@@ -54,10 +54,10 @@ function cameraStart() {
 }
 
 function init() {
-    navigator.geolocation.watchPosition(handler_Location);
+    //navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
-        window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
+        //window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
 }
 
@@ -117,11 +117,6 @@ function handler_Display(delta_Angle) {
         visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
     }
 }
-
-// Error handling function
-window.onError = function(message, source, lineno, colno, error) {
-    logs_Error.innerHTML = `we have encountered : ${message}`;
-  }
 
 init();
 
