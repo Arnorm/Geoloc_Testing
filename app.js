@@ -1,13 +1,13 @@
 // File that will handle every operation related to geolocation and display
 
 // Importing ThreeJs which handles the VR part
-/*
+
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
 logs_Mobile.innerHTML = `ThreeJs Imported. 3`;
 const logs_Error = document.getElementById('logs_Error');
-*/
+
 /// ///
 
 // Variables //
