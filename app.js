@@ -120,7 +120,7 @@ function handler_Display(delta_Angle) {
 
 // Error handling function
 window.onError = function(message, source, lineno, colno, error) {
-    logs_Error.innerHTML = message;
+    logs_Error.innerHTML = `we have encountered : ${message}`;
   }
 
 init();
