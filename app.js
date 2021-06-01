@@ -5,7 +5,7 @@
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
-logs_Mobile.innerHTML = `ThreeJs Imported. 1`;
+logs_Mobile.innerHTML = `ThreeJs Imported. 2`;
 const logs_Error = document.getElementById('logs_Error');
 
 /// ///
@@ -78,9 +78,9 @@ function startCompass() {
 }
 
 function handler_Orientation(e) {
-    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Orientation`;
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
+    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Orientation : ${delta_Angle.toFixed(1)}`;
     displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
     handler_Display(delta_Angle);
 }
