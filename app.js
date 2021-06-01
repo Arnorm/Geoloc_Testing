@@ -79,13 +79,11 @@ function startCompass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
-    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Orientation : ${delta_Angle.toFixed(1)}`;
     displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
     handler_Display(delta_Angle);
 }
 
 function handler_Location(position) {
-    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Location`;
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -107,7 +105,6 @@ function handler_Location(position) {
 // This function aims at handling the display
 // Arguments are to be added later (eventually, relative angle will be useful)
 function handler_Display(delta_Angle) {
-    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Display`;
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if(min_Angle<angle_Treshold){
