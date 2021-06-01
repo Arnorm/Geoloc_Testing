@@ -1,9 +1,11 @@
 // File that will handle every operation related to geolocation and display
 
+// Importing ThreeJs which handles the VR part
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
 logs_Mobile.innerHTML = `ThreeJs Imported.`;
+/// ///
 
 // Variables //
 const log = console.log;
@@ -22,14 +24,6 @@ var constraints = {
         }
     }
 };
-var constraints_navig = {
-    audio: false,
-    video: {
-        facingMode: {
-          exact: "user" // laptop line
-        }
-    }
-};
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
@@ -41,31 +35,26 @@ const isIOS = // different handlings
 
 // Handling the video flux
 function cameraStart() {
-    /*
-navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then(function(stream) {
-    track = stream.getTracks()[0];
-    cameraView.srcObject = stream;
-})
-.catch(function(error) {
-    console.error("Oops. Something is broken.", error);
-});
-*/
+    navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(function(stream) {
+        track = stream.getTracks()[0];
+        cameraView.srcObject = stream;
+    })
+    .catch(function(error) {
+        console.error("Oops. Something is broken.", error);
+    });
 }
 
 function init() {
-    /*
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
-    */
 }
 
 // Need to activate compass sensor on device to get orientation
 function startCompass() {
-    /*
     if (isIOS) {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
@@ -77,20 +66,16 @@ function startCompass() {
         })
         .catch(() => alert("not supported"));
     }
-    */
 }
 
 function handler_Orientation(e) {
-    /*
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
     displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
     handler_Display(delta_Angle);
-    */
 }
 
 function handler_Location(position) {
-/*
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -113,7 +98,6 @@ function handler_Location(position) {
 // This function aims at handling the display
 // Arguments are to be added later (eventually, relative angle will be useful)
 function handler_Display(delta_Angle) {
-    /*
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if(min_Angle<angle_Treshold){
@@ -124,7 +108,6 @@ function handler_Display(delta_Angle) {
     else{
         visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
     }
-    */
 }
 
 init();
