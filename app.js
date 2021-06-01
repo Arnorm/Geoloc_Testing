@@ -29,7 +29,7 @@ var constraints = {
 const cameraView = document.querySelector("#camera--view"),
     cameraOutput = document.querySelector("#camera--output"),
     cameraSensor = document.querySelector("#camera--sensor"),
-    cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and stream to cameraView
+    cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and streams to cameraView
 
 const isIOS = // different handlings
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
