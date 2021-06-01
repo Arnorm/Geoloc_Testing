@@ -6,6 +6,7 @@ import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
 logs_Mobile.innerHTML = `ThreeJs Importedd.`;
+const logs_Error = document.getElementById('logs_Error');
 
 /// ///
 
@@ -116,6 +117,11 @@ function handler_Display(delta_Angle) {
         visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
     }
 }
+
+// Error handling function
+window.onError = function(message, source, lineno, colno, error) {
+    logs_Error.innerHTML = message;
+  }
 
 init();
 
