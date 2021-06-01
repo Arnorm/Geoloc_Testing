@@ -53,12 +53,14 @@ function cameraStart() {
 }
 
 function init() {
+    /*
     logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside Init`;
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
         window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
+    */
 }
 
 // Need to activate compass sensor on device to get orientation on IOS
