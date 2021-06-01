@@ -5,7 +5,7 @@
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
-logs_Mobile.innerHTML = `ThreeJs Importedd.`;
+logs_Mobile.innerHTML = `ThreeJs Imported. 1`;
 const logs_Error = document.getElementById('logs_Error');
 
 /// ///
@@ -54,10 +54,11 @@ function cameraStart() {
 }
 
 function init() {
-    //navigator.geolocation.watchPosition(handler_Location);
+    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside Init`;
+    navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
-        //window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
+        window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
 }
 
@@ -77,6 +78,7 @@ function startCompass() {
 }
 
 function handler_Orientation(e) {
+    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Orientation`;
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
     displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
@@ -84,6 +86,7 @@ function handler_Orientation(e) {
 }
 
 function handler_Location(position) {
+    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Location`;
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -106,6 +109,7 @@ function handler_Location(position) {
 // This function aims at handling the display
 // Arguments are to be added later (eventually, relative angle will be useful)
 function handler_Display(delta_Angle) {
+    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Display`;
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if(min_Angle<angle_Treshold){
