@@ -1,11 +1,13 @@
 // File that will handle every operation related to geolocation and display
 
 // Importing ThreeJs which handles the VR part
+/*
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
 logs_Mobile.innerHTML = `ThreeJs Imported. 3`;
 const logs_Error = document.getElementById('logs_Error');
+*/
 /// ///
 
 // Variables //
@@ -84,7 +86,6 @@ function handler_Orientation(e) {
 
 function handler_Location(position) {
     logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Location`;
-    /*
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -97,7 +98,6 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    */
     displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
         latitude:${position.coords.latitude};
         and you are ${distance_Device_Target} km away from target.
