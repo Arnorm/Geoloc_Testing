@@ -87,6 +87,7 @@ function handler_Orientation(e) {
 
 function handler_Location(position) {
     logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Location`;
+    /*
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -99,11 +100,11 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    console.log("inside geoloc loop");
     displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
         latitude:${position.coords.latitude};
         and you are ${distance_Device_Target} km away from target.
         Also, bearing is : ${bearing_Device_Target}`;
+    */
 }
 
 // This function aims at handling the display
