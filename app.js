@@ -1,13 +1,11 @@
 // File that will handle every operation related to geolocation and display
 
 // Importing ThreeJs which handles the VR part
-
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
 logs_Mobile.innerHTML = `ThreeJs Imported. 3`;
 const logs_Error = document.getElementById('logs_Error');
-
 /// ///
 
 // Variables //
@@ -36,7 +34,7 @@ const isIOS = // different handlings
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
 
-//window.addEventListener("load", cameraStart, false); // camera loading event
+window.addEventListener("load", cameraStart, false); // camera loading event
 
 // Handling the video flux, triggered by "load" event
 function cameraStart() {
@@ -86,7 +84,6 @@ function handler_Orientation(e) {
 
 function handler_Location(position) {
     logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Location`;
-    /*
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -103,7 +100,6 @@ function handler_Location(position) {
         latitude:${position.coords.latitude};
         and you are ${distance_Device_Target} km away from target.
         Also, bearing is : ${bearing_Device_Target}`;
-    */
 }
 
 // This function aims at handling the display
