@@ -84,6 +84,7 @@ function handler_Orientation(e) {
 
 function handler_Location(position) {
     logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside handler_Location`;
+    /*
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -96,6 +97,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
+    */
     displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
         latitude:${position.coords.latitude};
         and you are ${distance_Device_Target} km away from target.
@@ -111,7 +113,7 @@ function handler_Display(delta_Angle) {
     if(min_Angle<angle_Treshold){
         visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.
          Here we are within the cone (limit angle being : ${angle_Treshold}) 
-        so we may Display some information about the object, like size, color, picture ...`;
+         so we may Display some information about the object, like size, color, picture ...`;
     }
     else{
         visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
