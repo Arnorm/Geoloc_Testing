@@ -2,7 +2,8 @@
 
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
-console.log("we have the scene");
+const logs_Mobile = document.getElementById('logs_Mobile');
+logs_Mobile.innerHTML = `ThreeJs Imported.`;
 
 // Variables //
 const log = console.log;
