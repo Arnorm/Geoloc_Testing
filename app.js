@@ -5,7 +5,7 @@
 import * as THREE from './threeJs/build/three.module.js';
 const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
-logs_Mobile.innerHTML = `ThreeJs Imported. 2`;
+logs_Mobile.innerHTML = `ThreeJs Imported. 3`;
 const logs_Error = document.getElementById('logs_Error');
 
 /// ///
@@ -40,7 +40,7 @@ const isIOS = // different handlings
 
 // Handling the video flux, triggered by "load" event
 function cameraStart() {
-    /*
+    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside Camera Start `;
     navigator.mediaDevices
         .getUserMedia(constraints)
         .then(function(stream) {
@@ -50,7 +50,6 @@ function cameraStart() {
     .catch(function(error) {
         console.error("Oops. Something is broken.", error);
     });
-    */
 }
 
 function init() {
