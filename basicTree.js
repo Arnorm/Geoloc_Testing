@@ -19,7 +19,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 
 // Change the entry point
 container = document.getElementById('right_View');
-document.body.appendChild(container);
+//document.body.appendChild(container);
 
 // Append Renderer to DOM
 container.appendChild(renderer.domElement);
