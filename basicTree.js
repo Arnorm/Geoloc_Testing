@@ -2,6 +2,8 @@
 // BASIC SETUP
 // ------------------------------------------------
 
+import * as THREE from './threeJs/build/three.module.js';
+
 // Create an empty scene
 var scene = new THREE.Scene();
 
