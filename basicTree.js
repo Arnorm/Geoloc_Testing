@@ -8,6 +8,8 @@ import * as THREE from './threeJs/build/three.module.js';
 // BASIC SETUP
 // ------------------------------------------------
 
+var container;
+
 // Create an empty scene
 var scene = new THREE.Scene();
 
