@@ -6,22 +6,23 @@ import * as THREE from './threeJs/build/three.module.js';
 
 // Create an empty scene
 var scene = new THREE.Scene();
-
 // Create a basic perspective camera
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 camera.position.z = 4;
-
 // Create a renderer with Antialiasing
 var renderer = new THREE.WebGLRenderer({antialias:true});
-
 // Configure renderer clear color
 renderer.setClearColor("#000000");
-
 // Configure renderer size
 renderer.setSize( window.innerWidth, window.innerHeight );
 
+
+// Change the entry point
+container = document.getElementById('right_View');
+document.body.appendChild(container);
+
 // Append Renderer to DOM
-document.body.appendChild( renderer.domElement );
+container.appendChild(renderer.domElement);
 
 // ------------------------------------------------
 // FUN STARTS HERE
