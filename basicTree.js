@@ -1,6 +1,6 @@
-// ------------------------------------------------
-// BASIC SETUP
-// ------------------------------------------------
+// Pasted file from https://github.com/mrdoob/three.js/blob/dev/examples/webxr_ar_hittest.html
+// The goal is then to adapt this logic to our application, so that we may have the same AR
+// effects, but ideally the objects would be automatically placed within the image
 
 import * as THREE from './threeJs/build/three.module.js';
 import { ARButton } from './threeJs/examples/jsm/webxr/ARButton.js';
