@@ -2,8 +2,7 @@
 // The goal is then to adapt this logic to our application, so that we may have the same AR
 // effects, but ideally the objects would be automatically placed within the image
 
-// Change imports ...
-import * as THREE from '../build/three.module.js';
+import * as THREE from './threeJs/build/three.module.js';
 import { ARButton } from './jsm/webxr/ARButton.js';
 
 let container;

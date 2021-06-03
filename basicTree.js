@@ -3,6 +3,7 @@
 // ------------------------------------------------
 
 import * as THREE from './threeJs/build/three.module.js';
+import { ARButton } from './threeJs/examples/jsm/webxr/ARButton.js';
 
 // ------------------------------------------------
 // BASIC SETUP
