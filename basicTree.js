@@ -39,7 +39,7 @@ function init() {
             root: document.getElementById("overlay")
             }
         }
-    ).then(onSessionStarted));
+    ));
 	const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
 	function onSelect() {
