@@ -36,9 +36,10 @@ function init() {
         requiredFeatures: ['hit-test'],
         optionalFeatures: ["dom-overlay"],
         domOverlay: {
-        root: document.getElementById("overlay")
+            root: document.getElementById("overlay")
+            }
         }
-    }));
+    ).then(onSessionStarted));
 	const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
 	function onSelect() {
@@ -66,33 +67,17 @@ function init() {
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+// This event triggers when we enter fullscreen AR mode
 function onSessionStarted(session) {
-    document.getElementById("xr-button").innerHTML = "Exit AR";
-
-    // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
         document.getElementById("session-info").innerHTML =
         "DOM Overlay type: " + session.domOverlayState.type;
+        document.getElementById("fullscreen_Content").innerHTML = 
+        "Here is some content only here when fullscreen triggered";
     }
-}
-
-function onXRFrame(t, frame) {
-    // Update the clear color so that we can observe the color in the
-    // headset changing over time. Use a scissor rectangle to keep the AR
-    // scene visible.
-    const width = session.renderState.baseLayer.framebufferWidth;
-    const height = session.renderState.baseLayer.framebufferHeight;
-    gl.enable(gl.SCISSOR_TEST);
-    gl.scissor(width / 4, height / 4, width / 2, height / 2);
-    let time = Date.now();
-    gl.clearColor(
-        Math.cos(time / 2000), Math.cos(time / 4000), Math.cos(time / 6000),
-        0.5
-    );
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
 function animate() {
