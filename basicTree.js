@@ -187,11 +187,11 @@ function placeObject() {
 
 // Raycasting logic
 function onXRFrame(t, frame) {
-    let session = frame.session;
-    session.requestAnimationFrame(onXRFrame);
+    //let session = frame.session;
+    //session.requestAnimationFrame(onXRFrame);
     if (frame) {
         const referenceSpace = renderer.xr.getReferenceSpace();
-        //const session = renderer.xr.getSession(); //old way to get session
+        const session = renderer.xr.getSession(); //old way to get session
         if (hitTestSourceRequested === false) {
             session.requestReferenceSpace('viewer').then(function(referenceSpace) {
                 session.requestHitTestSource({space: referenceSpace}).then(function(source) {
