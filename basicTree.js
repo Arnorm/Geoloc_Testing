@@ -3,6 +3,7 @@
 // effects, but ideally the objects would be automatically placed within the image
 
 import * as THREE from './threeJs/build/three.module.js';
+import { ARButton } from './threeJs/examples/jsm/webxr/ARButton.js';
 
     //Setting up AR variables
     /* Here are the "old" constants
@@ -67,6 +68,9 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
+    controller = renderer.xr.getController(0);
+	controller.addEventListener('select', placeObject);
+	scene.add(controller);
 };
 
 // button to start XR experience
@@ -75,8 +79,6 @@ const xrButton = document.getElementById('xr-button');
 const info = document.getElementById('info');
 // to control the xr session
 let xrSession = null;
-// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace
-let xrRefSpace = null;
 // for hit testing with detected surfaces
 let xrHitTestSource = null;
 
@@ -85,15 +87,15 @@ let gl = null;
 
 // Checking XR, triggers checkSupportedState event
 function checkXR() {
-if (!window.isSecureContext) {
-    document.getElementById("warning").innerText = "WebXR unavailable. Please use secure context";
-}
-if (navigator.xr) {
-    navigator.xr.addEventListener('devicechange', checkSupportedState);
-    checkSupportedState();
-} else {
-    document.getElementById("warning").innerText = "WebXR unavailable for this browser"; 
-}
+    if (!window.isSecureContext) {
+        document.getElementById("warning").innerText = "WebXR unavailable. Please use secure context";
+    }
+    if (navigator.xr) {
+        navigator.xr.addEventListener('devicechange', checkSupportedState);
+        checkSupportedState();
+    } else {
+        document.getElementById("warning").innerText = "WebXR unavailable for this browser"; 
+    }
 }
 
 // Checking if supported, triggers onButtonClicked event
@@ -124,52 +126,52 @@ if (!xrSession) {
 
 // Triggered by the button click
 function onSessionStarted(session) {
-xrSession = session;
-xrButton.innerHTML = 'Exit AR';
+    xrSession = session;
+    xrButton.innerHTML = 'Exit AR';
 
-// Show which type of DOM Overlay got enabled (if any)
-if (session.domOverlayState) {
-    info.innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
-}
+    // Show which type of DOM Overlay got enabled (if any)
+    if (session.domOverlayState) {
+        info.innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
+    }
 
-// create a canvas element and WebGL context for rendering
-session.addEventListener('end', onSessionEnded);
-let canvas = document.createElement('canvas');
-gl = canvas.getContext('webgl', { xrCompatible: true });
-session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
+    // create a canvas element and WebGL context for rendering
+    session.addEventListener('end', onSessionEnded);
+    let canvas = document.createElement('canvas');
+    gl = canvas.getContext('webgl', { xrCompatible: true });
+    session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
 
-// here we ask for viewer reference space, since we will be casting a ray
-// from a viewer towards a detected surface. The results of ray and surface intersection
-// will be obtained via xrHitTestSource variable
-session.requestReferenceSpace('viewer').then((refSpace) => {
-    session.requestHitTestSource({ space: refSpace }).then((hitTestSource) => {
-    xrHitTestSource = hitTestSource;
+    // here we ask for viewer reference space, since we will be casting a ray
+    // from a viewer towards a detected surface. The results of ray and surface intersection
+    // will be obtained via xrHitTestSource variable
+    session.requestReferenceSpace('viewer').then((refSpace) => {
+        session.requestHitTestSource({ space: refSpace }).then((hitTestSource) => {
+        xrHitTestSource = hitTestSource;
+        });
     });
-});
 
-session.requestReferenceSpace('local').then((refSpace) => {
-    xrRefSpace = refSpace;
-    session.requestAnimationFrame(onXRFrame);
-});
+    session.requestReferenceSpace('local').then((refSpace) => {
+        xrRefSpace = refSpace;
+        session.requestAnimationFrame(onXRFrame);
+    });
 
-document.getElementById("overlay").addEventListener('click', placeObject);
+    //document.getElementById("overlay").addEventListener('click', placeObject); Why here ?
 
-// initialize three.js scene
-initScene(gl, session);
+    // initialize three.js scene
+    initScene(gl, session);
 }
 
 function onRequestSessionError(ex) {
-info.innerHTML = "Failed to start AR session.";
-console.error(ex.message);
+    info.innerHTML = "Failed to start AR session.";
+    console.error(ex.message);
 }
 
 function onSessionEnded(event) {
-xrSession = null;
-xrButton.innerHTML = 'Enter AR';
-info.innerHTML = '';
-gl = null;
-if (xrHitTestSource) xrHitTestSource.cancel();
-xrHitTestSource = null;
+    xrSession = null;
+    xrButton.innerHTML = 'Enter AR';
+    info.innerHTML = '';
+    gl = null;
+    if (xrHitTestSource) xrHitTestSource.cancel();
+    xrHitTestSource = null;
 }
 
 // Placing a random cylinder for now onclick
