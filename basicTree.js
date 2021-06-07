@@ -19,7 +19,7 @@ function init() {
 	// Change the entry point
     container = document.getElementById('right_View');
 	document.body.appendChild(container);
-    
+
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
 	const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
@@ -30,7 +30,15 @@ function init() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.xr.enabled = true;
 	container.appendChild(renderer.domElement);
-	container.appendChild(ARButton.createButton(renderer, {requiredFeatures: ['hit-test']}));
+    // This button will trigger fullscreen XR, we call dom-overlay here
+	container.appendChild(ARButton.createButton(renderer, 
+        {
+        requiredFeatures: ['hit-test'],
+        optionalFeatures: ["dom-overlay"],
+        domOverlay: {
+        root: document.getElementById("overlay")
+        }
+    }));
 	const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
 	function onSelect() {
@@ -59,6 +67,32 @@ function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+function onSessionStarted(session) {
+    document.getElementById("xr-button").innerHTML = "Exit AR";
+
+    // Show which type of DOM Overlay got enabled (if any)
+    if (session.domOverlayState) {
+        document.getElementById("session-info").innerHTML =
+        "DOM Overlay type: " + session.domOverlayState.type;
+    }
+}
+
+function onXRFrame(t, frame) {
+    // Update the clear color so that we can observe the color in the
+    // headset changing over time. Use a scissor rectangle to keep the AR
+    // scene visible.
+    const width = session.renderState.baseLayer.framebufferWidth;
+    const height = session.renderState.baseLayer.framebufferHeight;
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(width / 4, height / 4, width / 2, height / 2);
+    let time = Date.now();
+    gl.clearColor(
+        Math.cos(time / 2000), Math.cos(time / 4000), Math.cos(time / 6000),
+        0.5
+    );
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
 function animate() {
