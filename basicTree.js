@@ -16,10 +16,10 @@ init();
 animate();
 
 function init() {
-	// Change the entry point
+	// Change the entry point (not really useful since it's fullscreen anyway)
     container = document.getElementById('right_View');
 	document.body.appendChild(container);
-
+    //Setting up AR variables
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
 	const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
@@ -33,8 +33,7 @@ function init() {
     // This button will trigger fullscreen XR, we call dom-overlay here
 	container.appendChild(ARButton.createButton(renderer, 
         {
-        requiredFeatures: ['hit-test'],
-        optionalFeatures: ["dom-overlay"],
+        requiredFeatures: ['hit-test']["dom-overlay"],
         domOverlay: {
             root: document.getElementById("overlay")
             }
