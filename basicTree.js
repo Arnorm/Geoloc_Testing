@@ -54,10 +54,12 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " a ";
     controller = renderer.xr.getController(0);
 	controller.addEventListener('select', placeObject);
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " right before add ";
 	scene.add(controller);
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " right before resize ";
+    
     window.addEventListener( 'resize', onWindowResize );
     visual_Debug.innerHTML = " Just created reticle ";
 };
