@@ -133,7 +133,7 @@ function onSessionStarted(session) {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
-
+    visual_Debug.innerHTML = " Right before initScene ";
     // initialize three.js scene
     initScene(gl, session);
 }
