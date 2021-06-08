@@ -14,6 +14,7 @@ let reticle = null;
 let lastFrame = Date.now();
 
 const initScene = (gl, session) => {
+    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -33,6 +34,11 @@ const initScene = (gl, session) => {
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local');
     renderer.xr.setSession(session);
+
+    // Controller
+    controller = renderer.xr.getController(0);
+	controller.addEventListener('select', onSelect);
+	scene.add(controller);
 
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
@@ -183,31 +189,41 @@ function updateAnimation() {
     }  
 }
 
-      function onXRFrame(t, frame) {
-        let session = frame.session;
-        session.requestAnimationFrame(onXRFrame);
+function onSelect() {
+    if (reticle.visible) {
+        const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.setFromMatrixPosition(reticle.matrix);
+        mesh.scale.y = Math.random() * 2 + 1;
+        scene.add(mesh);
+    }
+}
 
-        if (xrHitTestSource) {
-          // obtain hit test results by casting a ray from the center of device screen
-          // into AR view. Results indicate that ray intersected with one or more detected surfaces
-          const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-          if (hitTestResults.length) {
-            // obtain a local pose at the intersection point
-            const pose = hitTestResults[0].getPose(xrRefSpace);
-            // place a reticle at the intersection point
-            reticle.matrix.fromArray(pose.transform.matrix);
-            reticle.visible = true;
-          }
-        } else {  // do not show a reticle if no surfaces are intersected
-          reticle.visible = false;
+function onXRFrame(t, frame) {
+    let session = frame.session;
+    session.requestAnimationFrame(onXRFrame);
+
+    if (xrHitTestSource) {
+        // obtain hit test results by casting a ray from the center of device screen
+        // into AR view. Results indicate that ray intersected with one or more detected surfaces
+        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
+        if (hitTestResults.length) {
+        // obtain a local pose at the intersection point
+        const pose = hitTestResults[0].getPose(xrRefSpace);
+        // place a reticle at the intersection point
+        reticle.matrix.fromArray(pose.transform.matrix);
+        reticle.visible = true;
         }
+    } else {  // do not show a reticle if no surfaces are intersected
+        reticle.visible = false;
+    }
 
-        // update object animation
-        updateAnimation();
-        // bind our gl context that was created with WebXR to threejs renderer
-        gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
-        // render the scene
-        renderer.render(scene, camera);
-      }
+    // update object animation
+    updateAnimation();
+    // bind our gl context that was created with WebXR to threejs renderer
+    gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
+    // render the scene
+    renderer.render(scene, camera);
+    }
 
       checkXR();
