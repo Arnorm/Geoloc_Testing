@@ -107,7 +107,7 @@ if (!xrSession) {
 function onSessionStarted(session) {
     xrSession = session;
     xrButton.innerHTML = 'Exit AR';
-
+    visual_Debug.innerHTML = " onSessionStarted ";
     // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
         info.innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
