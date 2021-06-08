@@ -27,7 +27,6 @@ let gl = null;
 
 // Basic init of the whole scene
 const initScene = (gl, session) => {
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " initScene ";
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
@@ -41,13 +40,11 @@ const initScene = (gl, session) => {
         autoClear: true,
         context: gl,
     });
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " before renderer  ";
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local');
     renderer.xr.setSession(session);
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " afterRenderer ";
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
@@ -57,6 +54,7 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " right before controller ";
     controller = renderer.xr.getController(0);
 	controller.addEventListener('select', placeObject);
 	scene.add(controller);
@@ -135,7 +133,6 @@ function onSessionStarted(session) {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " Right before initScene ";
     // initialize three.js scene
     initScene(gl, session);
 }
