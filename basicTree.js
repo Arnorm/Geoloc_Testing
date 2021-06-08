@@ -39,8 +39,20 @@ let hitTestSourceRequested = false;
 let hitTestSource = null;
 // Target object for now
 const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
-let visual_Debug = document.getElementById("visual_Debug");
+// div in the overlay to display debug informations
+const visual_Debug = document.getElementById("visual_Debug");
+// button to start XR experience
+const xrButton = document.getElementById('xr-button');
+// to display debug information
+const info = document.getElementById('info');
+// to control the xr session
+let xrSession = null;
+// for hit testing with detected surfaces
+let xrHitTestSource = null;
+// Canvas OpenGL context used for rendering
+let gl = null;
 
+// Basic init of the whole scene
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
@@ -74,19 +86,10 @@ const initScene = (gl, session) => {
 	controller.addEventListener('select', placeObject);
 	scene.add(controller);
     window.addEventListener( 'resize', onWindowResize );
+    visual_Debug.innerHTML = " Just created reticle ";
 };
 
-// button to start XR experience
-const xrButton = document.getElementById('xr-button');
-// to display debug information
-const info = document.getElementById('info');
-// to control the xr session
-let xrSession = null;
-// for hit testing with detected surfaces
-let xrHitTestSource = null;
 
-// Canvas OpenGL context used for rendering
-let gl = null;
 
 // Checking XR, triggers checkSupportedState event
 function checkXR() {
@@ -129,7 +132,6 @@ if (!xrSession) {
 
 // Triggered by the button click
 function onSessionStarted(session) {
-    visual_Debug.innerHTML = " SESSION STARTED ";
     xrSession = session;
     xrButton.innerHTML = 'Exit AR';
 
@@ -179,6 +181,7 @@ function onSessionEnded(event) {
 
 // Placing a random cylinder for now onclick
 function placeObject() {
+    visual_Debug.innerHTML = " inside placeObject ... ";
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
