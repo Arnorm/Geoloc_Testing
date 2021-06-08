@@ -4,6 +4,7 @@
 
 import * as THREE from './threeJs/build/three.module.js';
 
+let container;
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -28,7 +29,7 @@ let gl = null;
 // Basic init of the whole scene
 const initScene = (gl, session) => {
     // Old way
-    container = document.getElementById('right_View');
+    container = document.createElement('div');
     document.body.appendChild(container);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
@@ -54,9 +55,8 @@ const initScene = (gl, session) => {
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.xr.enabled = true;
-    renderer.xr.setReferenceSpaceType('local');
-    renderer.xr.setSession(session);
     container.appendChild(renderer.domElement);
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " b ";
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
