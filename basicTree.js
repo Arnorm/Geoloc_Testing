@@ -35,8 +35,11 @@ let renderer = null;
 let scene = null;
 let camera = null;
 let reticle = null;
+let hitTestSourceRequested = false;
+let hitTestSource = null;
 // Target object for now
 const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
+let visual_Debug = document.getElementById("visual_Debug");
 
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
@@ -70,6 +73,7 @@ const initScene = (gl, session) => {
     controller = renderer.xr.getController(0);
 	controller.addEventListener('select', placeObject);
 	scene.add(controller);
+    window.addEventListener( 'resize', onWindowResize );
 };
 
 // button to start XR experience
@@ -188,6 +192,7 @@ function onXRFrame(t, frame) {
     //let session = frame.session;
     //session.requestAnimationFrame(onXRFrame);
     if (frame) {
+        visual_Debug.innerHTML = "we are in the frame loop";
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession(); //old way to get session
         if (hitTestSourceRequested === false) {
@@ -214,6 +219,12 @@ function onXRFrame(t, frame) {
         }
     }
     renderer.render(scene, camera);
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 function animate() {
