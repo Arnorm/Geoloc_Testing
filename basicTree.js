@@ -27,6 +27,7 @@ let gl = null;
 
 // Basic init of the whole scene
 const initScene = (gl, session) => {
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " initScene ";
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
@@ -59,7 +60,7 @@ const initScene = (gl, session) => {
 	controller.addEventListener('select', placeObject);
 	scene.add(controller);
     window.addEventListener( 'resize', onWindowResize );
-    visual_Debug.innerHTML = " Just created reticle ";
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " Just created reticle ";
 };
 
 
@@ -133,7 +134,7 @@ function onSessionStarted(session) {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
-    visual_Debug.innerHTML = " Right before initScene ";
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " Right before initScene ";
     // initialize three.js scene
     initScene(gl, session);
 }
