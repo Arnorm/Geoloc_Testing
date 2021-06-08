@@ -55,8 +55,10 @@ const initScene = (gl, session) => {
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local');
+    renderer.xr.setSession(session);
     container.appendChild(renderer.domElement);
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " b ";
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " B ";
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
