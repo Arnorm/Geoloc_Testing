@@ -3,33 +3,6 @@
 // effects, but ideally the objects would be automatically placed within the image
 
 import * as THREE from './threeJs/build/three.module.js';
-import { ARButton } from './threeJs/examples/jsm/webxr/ARButton.js';
-
-    //Setting up AR variables
-    /* Here are the "old" constants
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-	const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-	light.position.set(0.5, 1, 0.25);
-	scene.add(light);
-	renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.xr.enabled = true;
-	container.appendChild(renderer.domElement);
-
-    // This button will trigger fullscreen XR, we call dom-overlay here
-    // Removing this button to test alternatives
-    /*
-	container.appendChild(ARButton.createButton(renderer, 
-        {
-        requiredFeatures: ['hit-test']["dom-overlay"],
-        domOverlay: {
-            root: document.getElementById("overlay")
-            }
-        }
-    ));
-    */
 
 let renderer = null;
 let scene = null;
@@ -38,13 +11,13 @@ let reticle = null;
 let hitTestSourceRequested = false;
 let hitTestSource = null;
 // Target object for now
-const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
+let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 // div in the overlay to display debug informations
-const visual_Debug = document.getElementById("visual_Debug");
+let visual_Debug = document.getElementById("visual_Debug");
 // button to start XR experience
-const xrButton = document.getElementById('xr-button');
+let xrButton = document.getElementById('xr-button');
 // to display debug information
-const info = document.getElementById('info');
+let info = document.getElementById('info');
 // to control the xr session
 let xrSession = null;
 // for hit testing with detected surfaces
