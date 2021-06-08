@@ -41,12 +41,13 @@ const initScene = (gl, session) => {
         autoClear: true,
         context: gl,
     });
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " before renderer  ";
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local');
     renderer.xr.setSession(session);
-
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " afterRenderer ";
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
