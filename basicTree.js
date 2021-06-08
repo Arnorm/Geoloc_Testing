@@ -54,12 +54,12 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " right before controller ";
     controller = renderer.xr.getController(0);
 	controller.addEventListener('select', placeObject);
 	scene.add(controller);
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " right before resize ";
     window.addEventListener( 'resize', onWindowResize );
-    visual_Debug.innerHTML = visual_Debug.innerHTML + " Just created reticle ";
+    visual_Debug.innerHTML = " Just created reticle ";
 };
 
 
@@ -107,7 +107,6 @@ if (!xrSession) {
 function onSessionStarted(session) {
     xrSession = session;
     xrButton.innerHTML = 'Exit AR';
-    visual_Debug.innerHTML = " onSessionStarted ";
     // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
         info.innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
@@ -153,7 +152,7 @@ function onSessionEnded(event) {
 
 // Placing a random cylinder for now onclick
 function placeObject() {
-    visual_Debug.innerHTML = " inside placeObject ... ";
+    visual_Debug.innerHTML = visual_Debug.innerHTML + " inside placeObject ... ";
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
@@ -167,9 +166,7 @@ function placeObject() {
 function onXRFrame(t, frame) {
     //let session = frame.session;
     //session.requestAnimationFrame(onXRFrame);
-    visual_Debug.innerHTML = "we are in onXRFrame loop ";
     if (frame) {
-        visual_Debug.innerHTML = "we are in the frame loop";
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession(); //old way to get session
         if (hitTestSourceRequested === false) {
