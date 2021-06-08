@@ -129,6 +129,7 @@ if (!xrSession) {
 
 // Triggered by the button click
 function onSessionStarted(session) {
+    visual_Debug.innerHTML = " SESSION STARTED ";
     xrSession = session;
     xrButton.innerHTML = 'Exit AR';
 
@@ -191,6 +192,7 @@ function placeObject() {
 function onXRFrame(t, frame) {
     //let session = frame.session;
     //session.requestAnimationFrame(onXRFrame);
+    visual_Debug.innerHTML = "we are in onXRFrame loop ";
     if (frame) {
         visual_Debug.innerHTML = "we are in the frame loop";
         const referenceSpace = renderer.xr.getReferenceSpace();
