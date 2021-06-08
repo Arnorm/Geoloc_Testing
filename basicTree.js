@@ -40,11 +40,10 @@ const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1,
 
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
-    light.position.z = 1;
-    light.position.y = 5;
-    scene.add(light);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+	light.position.set(0.5, 1, 0.25);
+	scene.add(light);
 
     // create and configure three.js renderer with XR support
     renderer = new THREE.WebGLRenderer({
@@ -62,7 +61,7 @@ const initScene = (gl, session) => {
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-        new THREE.MeshPhongMaterial({ color: 0x0fff00 })
+        new THREE.MeshBasicMaterial()
     );
     // we will update it's matrix later using WebXR hit test pose matrix
     reticle.matrixAutoUpdate = false;
@@ -135,6 +134,7 @@ function onSessionStarted(session) {
     }
 
     // create a canvas element and WebGL context for rendering
+    // Here we'll want to modify the overlay to display smth 
     session.addEventListener('end', onSessionEnded);
     let canvas = document.createElement('canvas');
     gl = canvas.getContext('webgl', { xrCompatible: true });
@@ -153,8 +153,6 @@ function onSessionStarted(session) {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
-
-    //document.getElementById("overlay").addEventListener('click', placeObject); Why here ?
 
     // initialize three.js scene
     initScene(gl, session);
@@ -223,4 +221,4 @@ function animate() {
 }
 
 checkXR();
-animate(); //maybe this is too much
+animate();
