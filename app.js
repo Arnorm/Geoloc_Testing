@@ -1,11 +1,7 @@
 // File that will handle every operation related to geolocation and display
 
 // Importing ThreeJs which handles the VR part
-
-import * as THREE from './threeJs/build/three.module.js';
-const scene = new THREE.Scene();
 const logs_Mobile = document.getElementById('logs_Mobile');
-logs_Mobile.innerHTML = `ThreeJs Imported. 3`;
 const logs_Error = document.getElementById('logs_Error');
 
 /// ///
@@ -33,14 +29,12 @@ const isIOS = // different handlings
     navigator.userAgent.match(/AppleWebKit/);
 
 function init() {
-    /*
     logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside Init`;
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
         window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
-    */
 }
 
 // Need to activate compass sensor on device to get orientation on IOS
