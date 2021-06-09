@@ -121,7 +121,6 @@ function onButtonClicked() {
 }
 
 function onSessionStarted(session) {
-    visual_Debug.innerHTML = "Direction/Instructions";
     xrSession = session;
     xrButton.innerHTML = 'Exit AR';
 
@@ -242,7 +241,6 @@ function startCompass() {
 
 // Handles angles sensor
 function handler_Orientation(e) {
-    console.log(compass);
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
     //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
@@ -280,9 +278,10 @@ function handler_Display(delta_Angle) {
          Here we are within the cone (limit angle being : ${angle_Treshold}) 
          so we may Display some information about the object, like size, color, picture ...`;
          */
+         visual_Debug.innerHTML = `You found it !`;
     }
     else{
-        //visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
+        visual_Debug.innerHTML = `Try to reduce the angle : ${delta_Angle.toFixed(0)}`;
     }
 }
 
