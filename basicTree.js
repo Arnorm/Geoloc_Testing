@@ -37,12 +37,6 @@ const initScene = (gl, session) => {
     renderer.xr.setReferenceSpaceType('local');
     renderer.xr.setSession(session);
 
-    // Controller
-    
-    controller = renderer.xr.getController(0);
-	controller.addEventListener('select', onSelect);
-	scene.add(controller);
-
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
@@ -155,7 +149,6 @@ function onSessionEnded(event) {
 }
 
       function placeObject() {
-          console.log("object placed");
           /*
         if (reticle.visible && model) {
           reticle.visible = false;
@@ -174,6 +167,13 @@ function onSessionEnded(event) {
           document.getElementById("overlay").addEventListener('click', toggleAnimation);
         }
         */
+        if (reticle.visible) {
+            const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.setFromMatrixPosition(reticle.matrix);
+            mesh.scale.y = Math.random() * 2 + 1;
+            scene.add(mesh);
+        }
       }
 
 function toggleAnimation() {
@@ -192,16 +192,6 @@ function updateAnimation() {
     if (mixer) {
         mixer.update(dt);
     }  
-}
-
-function onSelect() {
-    if (reticle.visible) {
-        const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.setFromMatrixPosition(reticle.matrix);
-        mesh.scale.y = Math.random() * 2 + 1;
-        scene.add(mesh);
-    }
 }
 
 function onXRFrame(t, frame) {

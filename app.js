@@ -27,30 +27,10 @@ var constraints = {
         }
     }
 };
-const cameraView = document.querySelector("#camera--view"),
-    cameraOutput = document.querySelector("#camera--output"),
-    cameraSensor = document.querySelector("#camera--sensor"),
-    cameraTrigger = document.querySelector("#camera--trigger")// Access the device camera and streams to cameraView
 
 const isIOS = // different handlings
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
-
-window.addEventListener("load", cameraStart, false); // camera loading event
-
-// Handling the video flux, triggered by "load" event
-function cameraStart() {
-    logs_Mobile.innerHTML = logs_Mobile.innerHTML + `inside Camera Start `;
-    navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function(stream) {
-        track = stream.getTracks()[0];
-        cameraView.srcObject = stream;
-    })
-    .catch(function(error) {
-        console.error("Oops. Something is broken.", error);
-    });
-}
 
 function init() {
     /*
