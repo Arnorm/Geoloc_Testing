@@ -4,6 +4,8 @@
 
 import * as THREE from './threeJs/build/three.module.js';
 
+let visual_Debug = document.getElementById("visual_Debug");
+
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -41,7 +43,7 @@ const initScene = (gl, session) => {
 	controller.addEventListener('select', onSelect);
 	scene.add(controller);
     */
-   
+
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
@@ -104,6 +106,7 @@ function onButtonClicked() {
 }
 
 function onSessionStarted(session) {
+    visual_Debug.innerHTML = "Direction/Instructions";
     xrSession = session;
     xrButton.innerHTML = 'Exit AR';
 
