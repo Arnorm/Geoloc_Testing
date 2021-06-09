@@ -323,8 +323,8 @@ function bearing(startLat, startLng, destLat, destLng){
     startLng = toRadians(startLng);
     destLat = toRadians(destLat);
     destLng = toRadians(destLng);
-    y = Math.sin(destLng - startLng) * Math.cos(destLat);
-    x = Math.cos(startLat) * Math.sin(destLat) -
+    const y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    const x = Math.cos(startLat) * Math.sin(destLat) -
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
     bearing_ = Math.atan2(y, x);
     bearing_ = toDegrees(bearing_);
