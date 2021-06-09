@@ -9,24 +9,10 @@ const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const angle_Treshold = 30; // To be changed later, maybe even based on the camera of the device
-const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
-var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
-const visualisation_Target = document.getElementById('visualisation_Target');
 var bearing_Device_Target = 0; // Angles declared as globals for now
-var constraints = {
-    audio: false,
-    video: {
-        facingMode: {
-          exact: "environment" // remove this one if tested in a laptop because it requires rear camera
-        }
-    }
-};
-
 const isIOS = // different handlings
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
-
-
 
 // Variables for AR
 let visual_Debug = document.getElementById("visual_Debug");
@@ -40,8 +26,6 @@ let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0
 let lastFrame = Date.now();
 
 const initScene = (gl, session) => {
-    // calling init_Sensors to get informations
-    init_Sensors();
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -111,6 +95,9 @@ function checkXR() {
 function checkSupportedState() {
     navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
         if (supported) {
+        // calling init_Sensors to get informations
+        // Need to call them before fullscreen for permission to be seen by user
+        init_Sensors();
         xrButton.innerHTML = 'Enter AR';
         xrButton.addEventListener('click', onButtonClicked);
         } else {
@@ -254,6 +241,7 @@ function startCompass() {
 
 // Handles angles sensor
 function handler_Orientation(e) {
+    console.log(e.alpha);
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
     //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
