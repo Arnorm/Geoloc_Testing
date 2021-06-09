@@ -36,10 +36,12 @@ const initScene = (gl, session) => {
     renderer.xr.setSession(session);
 
     // Controller
+    /*
     controller = renderer.xr.getController(0);
 	controller.addEventListener('select', onSelect);
 	scene.add(controller);
-
+    */
+   
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
         new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
