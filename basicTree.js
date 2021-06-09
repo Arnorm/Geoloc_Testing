@@ -27,6 +27,7 @@ let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0
 let lastFrame = Date.now();
 
 const initScene = (gl, session) => {
+    console.log('init triggered');
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -170,6 +171,7 @@ function onSessionEnded(event) {
 }
 
 function placeObject() {
+    console.log('place');
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
@@ -281,7 +283,7 @@ function handler_Display(delta_Angle) {
          visual_Debug.innerHTML = `You found it !`;
     }
     else{
-        visual_Debug.innerHTML = `Try to reduce the angle : ${delta_Angle.toFixed(0)}`;
+        visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
     }
 }
 
