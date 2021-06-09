@@ -5,6 +5,7 @@
 import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
+let compass = 0;
 const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
@@ -241,7 +242,7 @@ function startCompass() {
 
 // Handles angles sensor
 function handler_Orientation(e) {
-    console.log(e.alpha);
+    console.log(compass);
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
     //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
