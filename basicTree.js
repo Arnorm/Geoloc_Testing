@@ -38,11 +38,10 @@ const initScene = (gl, session) => {
     renderer.xr.setSession(session);
 
     // Controller
-    /*
+    
     controller = renderer.xr.getController(0);
 	controller.addEventListener('select', onSelect);
 	scene.add(controller);
-    */
 
     // simple sprite to indicate detected surfaces
     reticle = new THREE.Mesh(
@@ -156,6 +155,7 @@ function onSessionEnded(event) {
 }
 
       function placeObject() {
+          console.log("object placed");
           /*
         if (reticle.visible && model) {
           reticle.visible = false;
