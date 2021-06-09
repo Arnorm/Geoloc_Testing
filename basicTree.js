@@ -13,10 +13,10 @@ let model = null;
 let mixer = null;
 let action = null;
 let reticle = null;
+let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 let lastFrame = Date.now();
 
 const initScene = (gl, session) => {
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
