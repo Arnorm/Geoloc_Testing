@@ -4,12 +4,35 @@
 
 import * as THREE from './threeJs/build/three.module.js';
 
-let visual_Debug = document.getElementById("visual_Debug");
+// Variables for sensors
+const log = console.log;
+const target_Long = 2.295284992068256;
+const target_Lat = 48.87397517044594;
+const angle_Treshold = 30; // To be changed later, maybe even based on the camera of the device
+const displayed_Logs_Orientation = document.getElementById('logs_Orientation');
+var displayed_Logs_Geo = document.getElementById('logs_Geoloc');
+const visualisation_Target = document.getElementById('visualisation_Target');
+var bearing_Device_Target = 0; // Angles declared as globals for now
+var constraints = {
+    audio: false,
+    video: {
+        facingMode: {
+          exact: "environment" // remove this one if tested in a laptop because it requires rear camera
+        }
+    }
+};
 
+const isIOS = // different handlings
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/);
+
+
+
+// Variables for AR
+let visual_Debug = document.getElementById("visual_Debug");
 let renderer = null;
 let scene = null;
 let camera = null;
-let model = null;
 let mixer = null;
 let action = null;
 let reticle = null;
@@ -17,6 +40,8 @@ let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0
 let lastFrame = Date.now();
 
 const initScene = (gl, session) => {
+    // calling init_Sensors to get informations
+    init_Sensors();
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -47,6 +72,15 @@ const initScene = (gl, session) => {
     reticle.visible = false;
     scene.add(reticle);
 };
+
+function init_Sensors() {
+    console.log("inside Sensors");
+    navigator.geolocation.watchPosition(handler_Location);
+    if (!isIOS) {
+    // if not on IOS, we add this listener to handle Orientation
+        window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
+    }
+}
 
 // button to start XR experience
 const xrButton = document.getElementById('xr-button');
@@ -148,40 +182,13 @@ function onSessionEnded(event) {
     xrHitTestSource = null;
 }
 
-      function placeObject() {
-          /*
-        if (reticle.visible && model) {
-          reticle.visible = false;
-          xrHitTestSource.cancel();
-          xrHitTestSource = null;
-          // we'll be placing our object right where the reticle was
-          const pos = reticle.getWorldPosition();
-          scene.remove(reticle);
-          model.position.set(pos.x, pos.y, pos.z);
-          scene.add(model);
-
-          // start object animation right away
-          toggleAnimation();
-          // instead of placing an object we will just toggle animation state
-          document.getElementById("overlay").removeEventListener('click', placeObject);
-          document.getElementById("overlay").addEventListener('click', toggleAnimation);
-        }
-        */
-        if (reticle.visible) {
-            const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.setFromMatrixPosition(reticle.matrix);
-            mesh.scale.y = Math.random() * 2 + 1;
-            scene.add(mesh);
-        }
-      }
-
-function toggleAnimation() {
-    if (action.isRunning()) {
-        action.stop();
-        action.reset();
-    } else {
-        action.play();
+function placeObject() {
+    if (reticle.visible) {
+        const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.setFromMatrixPosition(reticle.matrix);
+        mesh.scale.y = Math.random() * 2 + 1;
+        scene.add(mesh);
     }
 }
 
@@ -219,11 +226,82 @@ function onXRFrame(t, frame) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
     // render the scene
     renderer.render(scene, camera);
+}
+
+// triggers everything
+checkXR();
+
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// SENSORS /// /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+
+// Only for IOS, not tested YET
+function startCompass() {
+    if (isIOS) {
+    DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+        if (response === "granted") {
+            window.addEventListener("deviceorientation", handler_Orientation, true);
+        } else {
+            alert("has to be allowed!");
+        }
+        })
+        .catch(() => alert("not supported"));
     }
+}
 
-      checkXR();
+// Handles angles sensor
+function handler_Orientation(e) {
+    compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
+    var delta_Angle = bearing_Device_Target - compass;
+    //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
+    handler_Display(delta_Angle);
+}
 
-      /// /// AUXILIARIES /// ///
+// Handles location sensor
+function handler_Location(position) {
+    bearing_Device_Target = bearing(
+        position.coords.latitude,
+        position.coords.longitude,
+        target_Lat,
+        target_Long
+    );
+    var distance_Device_Target = calcCrow(
+        position.coords.latitude,
+        position.coords.longitude,
+        target_Lat,
+        target_Long
+    );
+    /*displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
+        latitude:${position.coords.latitude};
+        and you are ${distance_Device_Target} km away from target.
+        Also, bearing is : ${bearing_Device_Target}`;
+    */
+    visual_Debug.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target`;
+}
+
+// Handles overlay display
+function handler_Display(delta_Angle) {
+    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
+    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
+    if(min_Angle<angle_Treshold){
+        /*visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.
+         Here we are within the cone (limit angle being : ${angle_Treshold}) 
+         so we may Display some information about the object, like size, color, picture ...`;
+         */
+    }
+    else{
+        //visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.`;
+    }
+}
+
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// AUXILIARIES /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
 
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
 function calcCrow(startLat, startLng, destLat, destLng) 
