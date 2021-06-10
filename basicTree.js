@@ -1,7 +1,7 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
 import {target_Long, target_Lat, angle_Treshold, is_IOS, xr_Button, info} from './const.js';
-import {calc_Crow_Distance, to_Radians, to_Degrees, bearing,compass_Heading} from './auxiliaries.js';
+import {calc_Crow_Distance, bearing} from './auxiliaries.js';
 
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
