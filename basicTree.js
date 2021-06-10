@@ -5,6 +5,7 @@
 import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
+let is_Fullscreen_Active = false;
 let compass = 0;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
@@ -108,6 +109,7 @@ function checkSupportedState() {
 
 function onButtonClicked() {
     if (!xrSession) {
+        is_Fullscreen_Active = true;
         navigator.xr.requestSession('immersive-ar', {
             optionalFeatures: ['dom-overlay'],
             requiredFeatures: ['local', 'hit-test'],
@@ -159,6 +161,8 @@ function onRequestSessionError(ex) {
 }
 
 function onSessionEnded(event) {
+    is_Fullscreen_Active = false;
+    visual_Debug.innerHTML = ``;
     xrSession = null;
     xrButton.innerHTML = 'Enter AR';
     info.innerHTML = '';
@@ -271,12 +275,8 @@ function handler_Location(position) {
 function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
-    if(min_Angle<angle_Treshold){
-        /*visualisation_Target.innerHTML = `Min angle is : ${min_Angle.toFixed(1)}.
-         Here we are within the cone (limit angle being : ${angle_Treshold}) 
-         so we may Display some information about the object, like size, color, picture ...`;
-         */
-         visual_Debug.innerHTML = `You found it !`;
+    if(min_Angle<angle_Treshold && is_Fullscreen_Active){
+        visual_Debug.innerHTML = `You found it !`;
     }
     else{
         visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
