@@ -1,30 +1,38 @@
-// Pasted file from https://github.com/mrdoob/three.js/blob/dev/examples/webxr_ar_hittest.html
-// The goal is then to adapt this logic to our application, so that we may have the same AR
-// effects, but ideally the objects would be automatically placed within the image
-
+// Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
-let is_Fullscreen_Active = false;
+let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const angle_Treshold = 30; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
-const isIOS = // different handlings
+const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
-let visual_Debug = document.getElementById("visual_Debug");
+let visual_Debug = document.getElementById("visual_Debug"); // Div that the user sees in overlay
 let renderer = null;
 let scene = null;
 let camera = null;
 let mixer = null;
-let action = null;
-let reticle = null;
-let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
+let reticle = null; // Circle that the user sees when we may place an object (plane detection)
+let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); // Object placed "onTouch"
 let lastFrame = Date.now();
+// button to start XR experience
+const xrButton = document.getElementById('xr-button');
+// to display debug information
+const info = document.getElementById('info');
+// to control the xr session
+let xrSession = null;
+// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace
+let xrRefSpace = null;
+// for hit testing with detected surfaces
+let xrHitTestSource = null;
+// Canvas OpenGL context used for rendering
+let gl = null;
 
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
@@ -65,20 +73,6 @@ function init_Sensors() {
         window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
 }
-
-// button to start XR experience
-const xrButton = document.getElementById('xr-button');
-// to display debug information
-const info = document.getElementById('info');
-// to control the xr session
-let xrSession = null;
-// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace
-let xrRefSpace = null;
-// for hit testing with detected surfaces
-let xrHitTestSource = null;
-
-// Canvas OpenGL context used for rendering
-let gl = null;
 
 function checkXR() {
     if (!window.isSecureContext) {
