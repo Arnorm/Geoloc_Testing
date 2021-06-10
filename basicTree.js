@@ -1,6 +1,7 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
 import {target_Long, target_Lat, angle_Treshold, is_IOS, xr_Button, info} from './const.js';
+import {calcCrow, toRadians, toDegrees, bearing,compassHeading} from './auxiliaries.js';
 
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
@@ -203,9 +204,6 @@ function onXRFrame(t, frame) {
     renderer.render(scene, camera);
 }
 
-// triggers everything
-checkXR();
-
 /// /// /// /// /// /// /// ///
 /// /// /// /// /// /// /// ///
 /// /// SENSORS /// /// /// ///
@@ -278,77 +276,5 @@ function handler_Display(delta_Angle) {
     }
 }
 
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
-/// /// AUXILIARIES /// /// ///
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
-
-//This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
-function calcCrow(startLat, startLng, destLat, destLng) 
-{
-    var R = 6371; // km
-    var dLat = toRadians(destLat-startLat);
-    var dLon = toRadians(destLng-startLng);
-    var startLat = toRadians(startLat);
-    var destLat = toRadians(destLat);
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(startLat) * Math.cos(destLat); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c;
-    return d;
-}
-
-// Converts from degrees to radians.
-function toRadians(degrees) {
-    return degrees * Math.PI / 180;
-  };
-   
-// Converts from radians to degrees.
-function toDegrees(radians) {
-    return radians * 180 / Math.PI;
-}
-  
-// Bearing formula, between two 2D points, clockwise angle between north and (start,dest)
-function bearing(startLat, startLng, destLat, destLng){
-    startLat = toRadians(startLat);
-    startLng = toRadians(startLng);
-    destLat = toRadians(destLat);
-    destLng = toRadians(destLng);
-    const y = Math.sin(destLng - startLng) * Math.cos(destLat);
-    const x = Math.cos(startLat) * Math.sin(destLat) -
-          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
-    var bearing_ = Math.atan2(y, x);
-    bearing_ = toDegrees(bearing_);
-    return (bearing_ + 360) % 360;
-}
-
-// Compass heading (not used at the moment)
-function compassHeading(alpha, beta, gamma) {
-    // Convert degrees to radians
-    var alphaRad = alpha * (Math.PI / 180);
-    var betaRad = beta * (Math.PI / 180);
-    var gammaRad = gamma * (Math.PI / 180);
-    // Calculate equation components
-    var cA = Math.cos(alphaRad);
-    var sA = Math.sin(alphaRad);
-    var cB = Math.cos(betaRad);
-    var sB = Math.sin(betaRad);
-    var cG = Math.cos(gammaRad);
-    var sG = Math.sin(gammaRad);
-    // Calculate A, B, C rotation components
-    var rA = - cA * sG - sA * sB * cG;
-    var rB = - sA * sG + cA * sB * cG;
-    var rC = - cB * cG;
-    // Calculate compass heading
-    var compassHeading = Math.atan(rA / rB);
-    // Convert from half unit circle to whole unit circle
-    if(rB < 0) {
-      compassHeading += Math.PI;
-    }else if(rA < 0) {
-      compassHeading += 2 * Math.PI;
-    }
-    // Convert radians to degrees
-    compassHeading *= 180 / Math.PI;
-    return compassHeading;
-}
+// triggers everything
+checkXR();
