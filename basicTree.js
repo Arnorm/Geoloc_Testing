@@ -5,8 +5,10 @@ import {calc_Crow_Distance, bearing} from './auxiliaries.js';
 
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
-let compass = 0;
+let compass = null;
+let min_Angle = null;
 var bearing_Device_Target = 0; // Angles declared as globals for now
+let distance_Device_Target = null;
 
 // Variables for AR
 let object_Placed = 0;
@@ -205,6 +207,7 @@ function on_XR_Frame(t, frame) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
     // render the scene
     renderer.render(scene, camera);
+    handler_Display();
 }
 
 // Only for IOS, not tested YET
@@ -226,8 +229,8 @@ function start_Compass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
-    //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
-    handler_Display(delta_Angle);
+    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
+    min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
 }
 
 // Handles location sensor
@@ -238,7 +241,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    var distance_Device_Target = calc_Crow_Distance(
+    distance_Device_Target = calc_Crow_Distance(
         position.coords.latitude,
         position.coords.longitude,
         target_Lat,
@@ -247,20 +250,13 @@ function handler_Location(position) {
     visual_Display.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
 }
 
-// Handles overlay display
-// temporarly handles object placement, to be removed
-function handler_Display(delta_Angle) {
-    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
-    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
+// Handles overlay display & object placement
+function handler_Display() {
     if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
             if (reticle.visible && object_Placed<1) {
                 object_Placed = object_Placed + 1;
-                const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.setFromMatrixPosition(reticle.matrix);
-                mesh.scale.y = Math.random() * 2 + 1;
-                scene.add(mesh);
+                place_Object();
             }
             if (object_Placed<1) {
                 visual_Display.innerHTML = `Please move the reticle to a plane surface so that the object can be rendered !`;
@@ -273,5 +269,5 @@ function handler_Display(delta_Angle) {
     }
 }
 
-// triggers everything
+// Triggers everything
 check_XR();
