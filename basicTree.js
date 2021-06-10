@@ -1,7 +1,7 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
 import {target_Long, target_Lat, angle_Treshold, is_IOS, xr_Button, info} from './const.js';
-import {calcCrow, toRadians, toDegrees, bearing,compassHeading} from './auxiliaries.js';
+import {calc_Crow_Distance, to_Radians, to_Degrees, bearing,compass_Heading} from './auxiliaries.js';
 
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
@@ -26,7 +26,7 @@ let xr_Hit_Test_Source = null;
 // Canvas OpenGL context used for rendering
 let gl = null;
 
-const initScene = (gl, session) => {
+const init_Scene = (gl, session) => {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -66,26 +66,26 @@ function init_Sensors() {
     }
 }
 
-function checkXR() {
+function check_XR() {
     if (!window.isSecureContext) {
         document.getElementById("warning").innerText = "WebXR unavailable. Please use secure context";
     }
     if (navigator.xr) {
-        navigator.xr.addEventListener('devicechange', checkSupportedState);
-        checkSupportedState();
+        navigator.xr.addEventListener('devicechange', check_Supported_State);
+        check_Supported_State();
     } else {
         document.getElementById("warning").innerText = "WebXR unavailable for this browser"; 
     }
 }
 
-function checkSupportedState() {
+function check_Supported_State() {
     navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
         if (supported) {
         // calling init_Sensors to get informations
         // Need to call them before fullscreen for permission to be seen by user
         init_Sensors();
         xr_Button.innerHTML = 'Enter AR';
-        xr_Button.addEventListener('click', onButtonClicked);
+        xr_Button.addEventListener('click', on_Button_Clicked);
         } else {
         xr_Button.innerHTML = 'AR not found';
         }
@@ -93,7 +93,7 @@ function checkSupportedState() {
     });
 }
 
-function onButtonClicked() {
+function on_Button_Clicked() {
     if (!xr_Session) {
         is_Fullscreen_Active = true;
         console.log("we just enterd button click");
@@ -101,13 +101,13 @@ function onButtonClicked() {
             optionalFeatures: ['dom-overlay'],
             requiredFeatures: ['local', 'hit-test'],
             domOverlay: {root: document.getElementById('overlay')}
-        }).then(onSessionStarted, onRequestSessionError);
+        }).then(on_Session_Started, on_Request_Session_Error);
     } else {
         xr_Session.end();
     }
 }
 
-function onSessionStarted(session) {
+function on_Session_Started(session) {
     xr_Session = session;
     xr_Button.innerHTML = 'Exit AR';
 
@@ -117,7 +117,7 @@ function onSessionStarted(session) {
     }
 
     // create a canvas element and WebGL context for rendering
-    session.addEventListener('end', onSessionEnded);
+    session.addEventListener('end', on_Session_Ended);
     let canvas = document.createElement('canvas');
     gl = canvas.getContext('webgl', { xrCompatible: true });
     session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
@@ -133,21 +133,21 @@ function onSessionStarted(session) {
 
     session.requestReferenceSpace('local').then((refSpace) => {
         xr_Ref_Space = refSpace;
-        session.requestAnimationFrame(onXRFrame);
+        session.requestAnimationFrame(on_XR_Frame);
     });
 
-    document.getElementById("overlay").addEventListener('click', placeObject);
+    document.getElementById("overlay").addEventListener('click', place_Object);
 
     // initialize three.js scene
-    initScene(gl, session);
+    init_Scene(gl, session);
 }
 
-function onRequestSessionError(ex) {
+function on_Request_Session_Error(ex) {
     info.innerHTML = "Failed to start AR session.";
     console.error(ex.message);
 }
 
-function onSessionEnded(event) {
+function on_Session_Ended(event) {
     is_Fullscreen_Active = false;
     visual_Debug.innerHTML = ``;
     xr_Session = null;
@@ -158,7 +158,7 @@ function onSessionEnded(event) {
     xr_Hit_Test_Source = null;
 }
 
-function placeObject() {
+function place_Object() {
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
@@ -169,7 +169,7 @@ function placeObject() {
 }
 
 // Utility function to update animated objects
-function updateAnimation() {
+function update_Animation() {
     let dt = (Date.now() - last_Frame) / 1000;
     last_Frame = Date.now();
     if (mixer) {
@@ -177,9 +177,9 @@ function updateAnimation() {
     }  
 }
 
-function onXRFrame(t, frame) {
+function on_XR_Frame(t, frame) {
     let session = frame.session;
-    session.requestAnimationFrame(onXRFrame);
+    session.requestAnimationFrame(on_XR_Frame);
 
     if (xr_Hit_Test_Source) {
         // obtain hit test results by casting a ray from the center of device screen
@@ -197,7 +197,7 @@ function onXRFrame(t, frame) {
     }
 
     // update object animation
-    updateAnimation();
+    update_Animation();
     // bind our gl context that was created with WebXR to threejs renderer
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
     // render the scene
@@ -211,7 +211,7 @@ function onXRFrame(t, frame) {
 /// /// /// /// /// /// /// ///
 
 // Only for IOS, not tested YET
-function startCompass() {
+function start_Compass() {
     if (is_IOS) {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
@@ -241,7 +241,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    var distance_Device_Target = calcCrow(
+    var distance_Device_Target = calc_Crow_Distance(
         position.coords.latitude,
         position.coords.longitude,
         target_Lat,
@@ -277,4 +277,4 @@ function handler_Display(delta_Angle) {
 }
 
 // triggers everything
-checkXR();
+check_XR();
