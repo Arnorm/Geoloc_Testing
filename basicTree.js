@@ -6,7 +6,6 @@ import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
 let compass = 0;
-const log = console.log;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
 const angle_Treshold = 30; // To be changed later, maybe even based on the camera of the device
@@ -27,7 +26,6 @@ let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0
 let lastFrame = Date.now();
 
 const initScene = (gl, session) => {
-    console.log('init triggered');
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -60,7 +58,6 @@ const initScene = (gl, session) => {
 };
 
 function init_Sensors() {
-    console.log("inside Sensors");
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
@@ -171,7 +168,6 @@ function onSessionEnded(event) {
 }
 
 function placeObject() {
-    console.log('place');
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
@@ -327,7 +323,7 @@ function bearing(startLat, startLng, destLat, destLng){
     const y = Math.sin(destLng - startLng) * Math.cos(destLat);
     const x = Math.cos(startLat) * Math.sin(destLat) -
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
-    bearing_ = Math.atan2(y, x);
+    var bearing_ = Math.atan2(y, x);
     bearing_ = toDegrees(bearing_);
     return (bearing_ + 360) % 360;
 }
