@@ -104,6 +104,7 @@ function checkSupportedState() {
 function onButtonClicked() {
     if (!xrSession) {
         is_Fullscreen_Active = true;
+        console.log("we just enterd button click");
         navigator.xr.requestSession('immersive-ar', {
             optionalFeatures: ['dom-overlay'],
             requiredFeatures: ['local', 'hit-test'],
@@ -269,7 +270,7 @@ function handler_Location(position) {
 function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
-    if (is_Fullscreen_Active) {
+    if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
             visual_Debug.innerHTML = `You found it !`;
         }
