@@ -10,13 +10,16 @@ var bearing_Device_Target = 0; // Angles declared as globals for now
 
 // Variables for AR
 let object_Placed = 0;
-let visual_Debug = document.getElementById("visual_Debug"); // Div that the user sees in overlay
+// Div that the user sees in overlay
+let visual_Display = document.getElementById("visual_Display"); 
 let renderer = null;
 let scene = null;
 let camera = null;
 let mixer = null;
-let reticle = null; // Circle that the user sees when we may place an object (plane detection)
-let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); // Object placed "onTouch"
+// Circle that the user sees when we may place an object (plane detection)
+let reticle = null; 
+// Object placed "onTouch"
+let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); 
 let last_Frame = Date.now();
 let xr_Session = null;
 // reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/xr_Session/requestReferenceSpace
@@ -149,7 +152,7 @@ function on_Request_Session_Error(ex) {
 
 function on_Session_Ended(event) {
     is_Fullscreen_Active = false;
-    visual_Debug.innerHTML = ``;
+    visual_Display.innerHTML = ``;
     xr_Session = null;
     xr_Button.innerHTML = 'Enter AR';
     info.innerHTML = '';
@@ -204,12 +207,6 @@ function on_XR_Frame(t, frame) {
     renderer.render(scene, camera);
 }
 
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
-/// /// SENSORS /// /// /// ///
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
-
 // Only for IOS, not tested YET
 function start_Compass() {
     if (is_IOS) {
@@ -247,7 +244,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    visual_Debug.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
+    visual_Display.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
 }
 
 // Handles overlay display
@@ -266,12 +263,12 @@ function handler_Display(delta_Angle) {
                 scene.add(mesh);
             }
             if (object_Placed<1) {
-                visual_Debug.innerHTML = `Please move the reticle to a plane surface so that the object can be rendered !`;
+                visual_Display.innerHTML = `Please move the reticle to a plane surface so that the object can be rendered !`;
             }
-            visual_Debug.innerHTML = `You found it ! Congratulations`;
+            visual_Display.innerHTML = `You found it ! Congratulations`;
         }
         else{
-            visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
         }
     }
 }
