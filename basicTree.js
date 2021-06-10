@@ -1,16 +1,11 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
+import {target_Long, target_Lat, angle_Treshold, is_IOS, xr_Button, info} from './const.js';
 
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
-const target_Long = 2.295284992068256;
-const target_Lat = 48.87397517044594;
-const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
-const isIOS = // different handlings, IOS is not tested yet
-    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-    navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
 let object_Placed = 0;
@@ -21,17 +16,12 @@ let camera = null;
 let mixer = null;
 let reticle = null; // Circle that the user sees when we may place an object (plane detection)
 let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); // Object placed "onTouch"
-let lastFrame = Date.now();
-// button to start XR experience
-const xrButton = document.getElementById('xr-button');
-// to display debug information
-const info = document.getElementById('info');
-// to control the xr session
-let xrSession = null;
-// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace
-let xrRefSpace = null;
+let last_Frame = Date.now();
+let xr_Session = null;
+// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/xr_Session/requestReferenceSpace
+let xr_Ref_Space = null;
 // for hit testing with detected surfaces
-let xrHitTestSource = null;
+let xr_Hit_Test_Source = null;
 // Canvas OpenGL context used for rendering
 let gl = null;
 
@@ -69,7 +59,7 @@ const initScene = (gl, session) => {
 
 function init_Sensors() {
     navigator.geolocation.watchPosition(handler_Location);
-    if (!isIOS) {
+    if (!is_IOS) {
     // if not on IOS, we add this listener to handle Orientation
         window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
@@ -93,17 +83,17 @@ function checkSupportedState() {
         // calling init_Sensors to get informations
         // Need to call them before fullscreen for permission to be seen by user
         init_Sensors();
-        xrButton.innerHTML = 'Enter AR';
-        xrButton.addEventListener('click', onButtonClicked);
+        xr_Button.innerHTML = 'Enter AR';
+        xr_Button.addEventListener('click', onButtonClicked);
         } else {
-        xrButton.innerHTML = 'AR not found';
+        xr_Button.innerHTML = 'AR not found';
         }
-        xrButton.disabled = !supported;
+        xr_Button.disabled = !supported;
     });
 }
 
 function onButtonClicked() {
-    if (!xrSession) {
+    if (!xr_Session) {
         is_Fullscreen_Active = true;
         console.log("we just enterd button click");
         navigator.xr.requestSession('immersive-ar', {
@@ -112,13 +102,13 @@ function onButtonClicked() {
             domOverlay: {root: document.getElementById('overlay')}
         }).then(onSessionStarted, onRequestSessionError);
     } else {
-        xrSession.end();
+        xr_Session.end();
     }
 }
 
 function onSessionStarted(session) {
-    xrSession = session;
-    xrButton.innerHTML = 'Exit AR';
+    xr_Session = session;
+    xr_Button.innerHTML = 'Exit AR';
 
     // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
@@ -133,15 +123,15 @@ function onSessionStarted(session) {
 
     // here we ask for viewer reference space, since we will be casting a ray
     // from a viewer towards a detected surface. The results of ray and surface intersection
-    // will be obtained via xrHitTestSource variable
+    // will be obtained via xr_Hit_Test_Source variable
     session.requestReferenceSpace('viewer').then((refSpace) => {
         session.requestHitTestSource({ space: refSpace }).then((hitTestSource) => {
-        xrHitTestSource = hitTestSource;
+        xr_Hit_Test_Source = hitTestSource;
         });
     });
 
     session.requestReferenceSpace('local').then((refSpace) => {
-        xrRefSpace = refSpace;
+        xr_Ref_Space = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
 
@@ -159,12 +149,12 @@ function onRequestSessionError(ex) {
 function onSessionEnded(event) {
     is_Fullscreen_Active = false;
     visual_Debug.innerHTML = ``;
-    xrSession = null;
-    xrButton.innerHTML = 'Enter AR';
+    xr_Session = null;
+    xr_Button.innerHTML = 'Enter AR';
     info.innerHTML = '';
     gl = null;
-    if (xrHitTestSource) xrHitTestSource.cancel();
-    xrHitTestSource = null;
+    if (xr_Hit_Test_Source) xr_Hit_Test_Source.cancel();
+    xr_Hit_Test_Source = null;
 }
 
 function placeObject() {
@@ -179,8 +169,8 @@ function placeObject() {
 
 // Utility function to update animated objects
 function updateAnimation() {
-    let dt = (Date.now() - lastFrame) / 1000;
-    lastFrame = Date.now();
+    let dt = (Date.now() - last_Frame) / 1000;
+    last_Frame = Date.now();
     if (mixer) {
         mixer.update(dt);
     }  
@@ -190,13 +180,13 @@ function onXRFrame(t, frame) {
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
 
-    if (xrHitTestSource) {
+    if (xr_Hit_Test_Source) {
         // obtain hit test results by casting a ray from the center of device screen
         // into AR view. Results indicate that ray intersected with one or more detected surfaces
-        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
+        const hitTestResults = frame.getHitTestResults(xr_Hit_Test_Source);
         if (hitTestResults.length) {
         // obtain a local pose at the intersection point
-        const pose = hitTestResults[0].getPose(xrRefSpace);
+        const pose = hitTestResults[0].getPose(xr_Ref_Space);
         // place a reticle at the intersection point
         reticle.matrix.fromArray(pose.transform.matrix);
         reticle.visible = true;
@@ -224,7 +214,7 @@ checkXR();
 
 // Only for IOS, not tested YET
 function startCompass() {
-    if (isIOS) {
+    if (is_IOS) {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
         if (response === "granted") {
@@ -263,15 +253,13 @@ function handler_Location(position) {
 }
 
 // Handles overlay display
-// teomporarly handles object placement, to be removed
+// temporarly handles object placement, to be removed
 function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
-            console.log(`object placed : ${object_Placed}`);
             if (reticle.visible && object_Placed<1) {
-                console.log(`tried to place the object here`);
                 object_Placed = object_Placed + 1;
                 const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
                 const mesh = new THREE.Mesh(geometry, material);
@@ -279,7 +267,10 @@ function handler_Display(delta_Angle) {
                 mesh.scale.y = Math.random() * 2 + 1;
                 scene.add(mesh);
             }
-            visual_Debug.innerHTML = `You found it !`;
+            if (object_Placed<1) {
+                visual_Debug.innerHTML = `Please move the reticle to a plane surface so that the object can be rendered !`;
+            }
+            visual_Debug.innerHTML = `You found it ! Congratulations`;
         }
         else{
             visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
