@@ -13,6 +13,7 @@ const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
+let object_Placed = 0;
 let visual_Debug = document.getElementById("visual_Debug"); // Div that the user sees in overlay
 let renderer = null;
 let scene = null;
@@ -267,11 +268,20 @@ function handler_Location(position) {
 }
 
 // Handles overlay display
+// teomporarly handles object placement, to be removed
 function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
+            if (reticle.visible && object_Placed<1) {
+                object_Placed = object_Placed + 1;
+                const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.setFromMatrixPosition(reticle.matrix);
+                mesh.scale.y = Math.random() * 2 + 1;
+                scene.add(mesh);
+            }
             visual_Debug.innerHTML = `You found it !`;
         }
         else{
