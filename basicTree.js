@@ -269,11 +269,13 @@ function handler_Location(position) {
 function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
-    if(min_Angle<angle_Treshold && is_Fullscreen_Active){
-        visual_Debug.innerHTML = `You found it !`;
-    }
-    else{
-        visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+    if (is_Fullscreen_Active) {
+        if(min_Angle<angle_Treshold){
+            visual_Debug.innerHTML = `You found it !`;
+        }
+        else{
+            visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+        }
     }
 }
 
