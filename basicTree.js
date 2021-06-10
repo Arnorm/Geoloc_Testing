@@ -6,7 +6,7 @@ let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
 const target_Long = 2.295284992068256;
 const target_Lat = 48.87397517044594;
-const angle_Treshold = 30; // To be changed later, maybe even based on the camera of the device
+const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
@@ -259,12 +259,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    /*displayed_Logs_Geo.innerHTML = `longitude:${position.coords.longitude}; 
-        latitude:${position.coords.latitude};
-        and you are ${distance_Device_Target} km away from target.
-        Also, bearing is : ${bearing_Device_Target}`;
-    */
-    visual_Debug.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target`;
+    visual_Debug.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
 }
 
 // Handles overlay display
@@ -274,7 +269,9 @@ function handler_Display(delta_Angle) {
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
+            console.log(`object placed : ${object_Placed}`);
             if (reticle.visible && object_Placed<1) {
+                console.log(`tried to place the object here`);
                 object_Placed = object_Placed + 1;
                 const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
                 const mesh = new THREE.Mesh(geometry, material);
