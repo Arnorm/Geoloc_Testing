@@ -55,7 +55,7 @@ function compass_Heading(alpha, beta, gamma) {
     // Calculate A, B, C rotation components
     var rA = - cA * sG - sA * sB * cG;
     var rB = - sA * sG + cA * sB * cG;
-    var rC = - cB * cG;
+    //var rC = - cB * cG;
     // Calculate compass heading
     var compass_Heading = Math.atan2(rA / rB);
     // Convert from half unit circle to whole unit circle

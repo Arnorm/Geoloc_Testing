@@ -228,7 +228,6 @@ function start_Compass() {
 // Handles angles sensor
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
-    console.log(compass);
     var delta_Angle = bearing_Device_Target - compass;
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
@@ -265,7 +264,7 @@ function handler_Display() {
             visual_Display.innerHTML = `You found it ! Congratulations`;
         }
         else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} // ${abs_Delta_Angle.toFixed(0)}`;
         }
     }
 }
