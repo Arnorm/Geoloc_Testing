@@ -14,7 +14,7 @@ const isIOS = // different handlings, IOS is not tested yet
 
 // Variables for AR
 let object_Placed = 0;
-let visual_Debug = document.getElementById("visual_Debug"); // Div that the user sees in overlay
+let visual_Display = document.getElementById("visual_Display"); // Div that the user sees in overlay
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -158,7 +158,7 @@ function onRequestSessionError(ex) {
 
 function onSessionEnded(event) {
     is_Fullscreen_Active = false;
-    visual_Debug.innerHTML = ``;
+    visual_Display.innerHTML = ``;
     xrSession = null;
     xrButton.innerHTML = 'Enter AR';
     info.innerHTML = '';
@@ -259,7 +259,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    visual_Debug.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
+    visual_Display.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
 }
 
 // Handles overlay display
@@ -279,10 +279,10 @@ function handler_Display(delta_Angle) {
                 mesh.scale.y = Math.random() * 2 + 1;
                 scene.add(mesh);
             }
-            visual_Debug.innerHTML = `You found it !`;
+            visual_Display.innerHTML = `You found it !`;
         }
         else{
-            visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
         }
     }
 }
