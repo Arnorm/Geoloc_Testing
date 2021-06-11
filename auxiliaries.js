@@ -57,7 +57,7 @@ function compass_Heading(alpha, beta, gamma) {
     var rB = - sA * sG + cA * sB * cG;
     var rC = - cB * cG;
     // Calculate compass heading
-    var compass_Heading = Math.atan(rA / rB);
+    var compass_Heading = Math.atan2(rA / rB);
     // Convert from half unit circle to whole unit circle
     if(rB < 0) {
       compass_Heading += Math.PI;
