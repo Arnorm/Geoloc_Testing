@@ -1,37 +1,41 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
-import {target_Long, target_Lat, angle_Treshold, is_IOS, xr_Button, info} from './const.js';
-import {calc_Crow_Distance, bearing} from './auxiliaries.js';
 
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
-let compass = null;
-//let min_Angle = 0;
+let compass = 0;
+const target_Long = 2.295284992068256;
+const target_Lat = 48.87397517044594;
+const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
-let distance_Device_Target = null;
+const isIOS = // different handlings, IOS is not tested yet
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
 let object_Placed = 0;
-// Div that the user sees in overlay
-let visual_Display = document.getElementById("visual_Display"); 
+let visual_Debug = document.getElementById("visual_Debug"); // Div that the user sees in overlay
 let renderer = null;
 let scene = null;
 let camera = null;
 let mixer = null;
-// Circle that the user sees when we may place an object (plane detection)
-let reticle = null; 
-// Object placed "onTouch"
-let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); 
-let last_Frame = Date.now();
-let xr_Session = null;
-// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/xr_Session/requestReferenceSpace
-let xr_Ref_Space = null;
+let reticle = null; // Circle that the user sees when we may place an object (plane detection)
+let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); // Object placed "onTouch"
+let lastFrame = Date.now();
+// button to start XR experience
+const xrButton = document.getElementById('xr-button');
+// to display debug information
+const info = document.getElementById('info');
+// to control the xr session
+let xrSession = null;
+// reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace
+let xrRefSpace = null;
 // for hit testing with detected surfaces
-let xr_Hit_Test_Source = null;
+let xrHitTestSource = null;
 // Canvas OpenGL context used for rendering
 let gl = null;
 
-const init_Scene = (gl, session) => {
+const initScene = (gl, session) => {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
@@ -65,56 +69,56 @@ const init_Scene = (gl, session) => {
 
 function init_Sensors() {
     navigator.geolocation.watchPosition(handler_Location);
-    if (!is_IOS) {
+    if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
         window.addEventListener("deviceorientationabsolute", handler_Orientation, true);
     }
 }
 
-function check_XR() {
+function checkXR() {
     if (!window.isSecureContext) {
         document.getElementById("warning").innerText = "WebXR unavailable. Please use secure context";
     }
     if (navigator.xr) {
-        navigator.xr.addEventListener('devicechange', check_Supported_State);
-        check_Supported_State();
+        navigator.xr.addEventListener('devicechange', checkSupportedState);
+        checkSupportedState();
     } else {
         document.getElementById("warning").innerText = "WebXR unavailable for this browser"; 
     }
 }
 
-function check_Supported_State() {
+function checkSupportedState() {
     navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
         if (supported) {
         // calling init_Sensors to get informations
         // Need to call them before fullscreen for permission to be seen by user
         init_Sensors();
-        xr_Button.innerHTML = 'Enter AR';
-        xr_Button.addEventListener('click', on_Button_Clicked);
+        xrButton.innerHTML = 'Enter AR';
+        xrButton.addEventListener('click', onButtonClicked);
         } else {
-        xr_Button.innerHTML = 'AR not found';
+        xrButton.innerHTML = 'AR not found';
         }
-        xr_Button.disabled = !supported;
+        xrButton.disabled = !supported;
     });
 }
 
-function on_Button_Clicked() {
-    if (!xr_Session) {
+function onButtonClicked() {
+    if (!xrSession) {
         is_Fullscreen_Active = true;
         console.log("we just enterd button click");
         navigator.xr.requestSession('immersive-ar', {
             optionalFeatures: ['dom-overlay'],
             requiredFeatures: ['local', 'hit-test'],
             domOverlay: {root: document.getElementById('overlay')}
-        }).then(on_Session_Started, on_Request_Session_Error);
+        }).then(onSessionStarted, onRequestSessionError);
     } else {
-        xr_Session.end();
+        xrSession.end();
     }
 }
 
-function on_Session_Started(session) {
-    xr_Session = session;
-    xr_Button.innerHTML = 'Exit AR';
+function onSessionStarted(session) {
+    xrSession = session;
+    xrButton.innerHTML = 'Exit AR';
 
     // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
@@ -122,48 +126,48 @@ function on_Session_Started(session) {
     }
 
     // create a canvas element and WebGL context for rendering
-    session.addEventListener('end', on_Session_Ended);
+    session.addEventListener('end', onSessionEnded);
     let canvas = document.createElement('canvas');
     gl = canvas.getContext('webgl', { xrCompatible: true });
     session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
 
     // here we ask for viewer reference space, since we will be casting a ray
     // from a viewer towards a detected surface. The results of ray and surface intersection
-    // will be obtained via xr_Hit_Test_Source variable
+    // will be obtained via xrHitTestSource variable
     session.requestReferenceSpace('viewer').then((refSpace) => {
         session.requestHitTestSource({ space: refSpace }).then((hitTestSource) => {
-        xr_Hit_Test_Source = hitTestSource;
+        xrHitTestSource = hitTestSource;
         });
     });
 
     session.requestReferenceSpace('local').then((refSpace) => {
-        xr_Ref_Space = refSpace;
-        session.requestAnimationFrame(on_XR_Frame);
+        xrRefSpace = refSpace;
+        session.requestAnimationFrame(onXRFrame);
     });
 
-    document.getElementById("overlay").addEventListener('click', place_Object);
+    document.getElementById("overlay").addEventListener('click', placeObject);
 
     // initialize three.js scene
-    init_Scene(gl, session);
+    initScene(gl, session);
 }
 
-function on_Request_Session_Error(ex) {
+function onRequestSessionError(ex) {
     info.innerHTML = "Failed to start AR session.";
     console.error(ex.message);
 }
 
-function on_Session_Ended(event) {
+function onSessionEnded(event) {
     is_Fullscreen_Active = false;
-    visual_Display.innerHTML = ``;
-    xr_Session = null;
-    xr_Button.innerHTML = 'Enter AR';
+    visual_Debug.innerHTML = ``;
+    xrSession = null;
+    xrButton.innerHTML = 'Enter AR';
     info.innerHTML = '';
     gl = null;
-    if (xr_Hit_Test_Source) xr_Hit_Test_Source.cancel();
-    xr_Hit_Test_Source = null;
+    if (xrHitTestSource) xrHitTestSource.cancel();
+    xrHitTestSource = null;
 }
 
-function place_Object() {
+function placeObject() {
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
@@ -174,25 +178,25 @@ function place_Object() {
 }
 
 // Utility function to update animated objects
-function update_Animation() {
-    let dt = (Date.now() - last_Frame) / 1000;
-    last_Frame = Date.now();
+function updateAnimation() {
+    let dt = (Date.now() - lastFrame) / 1000;
+    lastFrame = Date.now();
     if (mixer) {
         mixer.update(dt);
     }  
 }
 
-function on_XR_Frame(t, frame) {
+function onXRFrame(t, frame) {
     let session = frame.session;
-    session.requestAnimationFrame(on_XR_Frame);
+    session.requestAnimationFrame(onXRFrame);
 
-    if (xr_Hit_Test_Source) {
+    if (xrHitTestSource) {
         // obtain hit test results by casting a ray from the center of device screen
         // into AR view. Results indicate that ray intersected with one or more detected surfaces
-        const hitTestResults = frame.getHitTestResults(xr_Hit_Test_Source);
+        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
         if (hitTestResults.length) {
         // obtain a local pose at the intersection point
-        const pose = hitTestResults[0].getPose(xr_Ref_Space);
+        const pose = hitTestResults[0].getPose(xrRefSpace);
         // place a reticle at the intersection point
         reticle.matrix.fromArray(pose.transform.matrix);
         reticle.visible = true;
@@ -202,17 +206,25 @@ function on_XR_Frame(t, frame) {
     }
 
     // update object animation
-    update_Animation();
+    updateAnimation();
     // bind our gl context that was created with WebXR to threejs renderer
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
     // render the scene
     renderer.render(scene, camera);
-    //handler_Display();
 }
 
+// triggers everything
+checkXR();
+
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// SENSORS /// /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+
 // Only for IOS, not tested YET
-function start_Compass() {
-    if (is_IOS) {
+function startCompass() {
+    if (isIOS) {
     DeviceOrientationEvent.requestPermission()
         .then((response) => {
         if (response === "granted") {
@@ -229,23 +241,8 @@ function start_Compass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
-    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
-    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
-    if (is_Fullscreen_Active==true) {
-        if(min_Angle<angle_Treshold){
-            if (reticle.visible && object_Placed<1) {
-                object_Placed = object_Placed + 1;
-                place_Object();
-            }
-            if (object_Placed<1) {
-                visual_Display.innerHTML = `Please move the reticle to a plane surface so that the object can be rendered !`;
-            }
-            visual_Display.innerHTML = `You found it ! Congratulations`;
-        }
-        else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
-        }
-    }
+    //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
+    handler_Display(delta_Angle);
 }
 
 // Handles location sensor
@@ -256,33 +253,111 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    distance_Device_Target = calc_Crow_Distance(
+    var distance_Device_Target = calcCrow(
         position.coords.latitude,
         position.coords.longitude,
         target_Lat,
         target_Long
     );
-    visual_Display.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
+    visual_Debug.innerHTML = `you are ${distance_Device_Target.toFixed(1)} km away from target (let's say that if user is too far from any target, we don't enter AR mode)`;
 }
 
-// Handles overlay display & object placement
-function handler_Display() {
+// Handles overlay display
+// teomporarly handles object placement, to be removed
+function handler_Display(delta_Angle) {
+    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
+    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
+            console.log(`object placed : ${object_Placed}`);
             if (reticle.visible && object_Placed<1) {
+                console.log(`tried to place the object here`);
                 object_Placed = object_Placed + 1;
-                place_Object();
+                const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.setFromMatrixPosition(reticle.matrix);
+                mesh.scale.y = Math.random() * 2 + 1;
+                scene.add(mesh);
             }
-            if (object_Placed<1) {
-                visual_Display.innerHTML = `Please move the reticle to a plane surface so that the object can be rendered !`;
-            }
-            visual_Display.innerHTML = `You found it ! Congratulations`;
+            visual_Debug.innerHTML = `You found it !`;
         }
         else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+            visual_Debug.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
         }
     }
 }
 
-// Triggers everything
-check_XR();
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// AUXILIARIES /// /// ///
+/// /// /// /// /// /// /// ///
+/// /// /// /// /// /// /// ///
+
+//This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
+function calcCrow(startLat, startLng, destLat, destLng) 
+{
+    var R = 6371; // km
+    var dLat = toRadians(destLat-startLat);
+    var dLon = toRadians(destLng-startLng);
+    var startLat = toRadians(startLat);
+    var destLat = toRadians(destLat);
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(startLat) * Math.cos(destLat); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c;
+    return d;
+}
+
+// Converts from degrees to radians.
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+  };
+   
+// Converts from radians to degrees.
+function toDegrees(radians) {
+    return radians * 180 / Math.PI;
+}
+  
+// Bearing formula, between two 2D points, clockwise angle between north and (start,dest)
+function bearing(startLat, startLng, destLat, destLng){
+    startLat = toRadians(startLat);
+    startLng = toRadians(startLng);
+    destLat = toRadians(destLat);
+    destLng = toRadians(destLng);
+    const y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    const x = Math.cos(startLat) * Math.sin(destLat) -
+          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+    var bearing_ = Math.atan2(y, x);
+    bearing_ = toDegrees(bearing_);
+    return (bearing_ + 360) % 360;
+}
+
+// Compass heading (not used at the moment)
+function compassHeading(alpha, beta, gamma) {
+    // Convert degrees to radians
+    var alphaRad = alpha * (Math.PI / 180);
+    var betaRad = beta * (Math.PI / 180);
+    var gammaRad = gamma * (Math.PI / 180);
+    // Calculate equation components
+    var cA = Math.cos(alphaRad);
+    var sA = Math.sin(alphaRad);
+    var cB = Math.cos(betaRad);
+    var sB = Math.sin(betaRad);
+    var cG = Math.cos(gammaRad);
+    var sG = Math.sin(gammaRad);
+    // Calculate A, B, C rotation components
+    var rA = - cA * sG - sA * sB * cG;
+    var rB = - sA * sG + cA * sB * cG;
+    var rC = - cB * cG;
+    // Calculate compass heading
+    var compassHeading = Math.atan(rA / rB);
+    // Convert from half unit circle to whole unit circle
+    if(rB < 0) {
+      compassHeading += Math.PI;
+    }else if(rA < 0) {
+      compassHeading += 2 * Math.PI;
+    }
+    // Convert radians to degrees
+    compassHeading *= 180 / Math.PI;
+    return compassHeading;
+}
