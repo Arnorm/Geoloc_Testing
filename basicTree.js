@@ -6,7 +6,7 @@ import {calc_Crow_Distance, bearing} from './auxiliaries.js';
 // Variables for sensors
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = null;
-let min_Angle = null;
+let min_Angle = 0;
 var bearing_Device_Target = 0; // Angles declared as globals for now
 let distance_Device_Target = null;
 
@@ -228,6 +228,7 @@ function start_Compass() {
 // Handles angles sensor
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
+    console.log(compass);
     var delta_Angle = bearing_Device_Target - compass;
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
