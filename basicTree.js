@@ -282,9 +282,30 @@ function handler_Display(delta_Angle) {
             visual_Display.innerHTML = `You found it !`;
         }
         else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${delta_Angle.toFixed(0)}`;
         }
     }
+}
+
+function get_Overlay_Message(min_angle) {
+    var overlay_Message = ``;
+    if(min_Angle<angle_Treshold){
+        console.log(`object placed : ${object_Placed}`);
+        if (reticle.visible && object_Placed<1) {
+            console.log(`tried to place the object here`);
+            object_Placed = object_Placed + 1;
+            const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.setFromMatrixPosition(reticle.matrix);
+            mesh.scale.y = Math.random() * 2 + 1;
+            scene.add(mesh);
+        }
+        visual_Display.innerHTML = `You found it !`;
+    }
+    else{
+        visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+    }
+    return overlay_Message;
 }
 
 /// /// /// /// /// /// /// ///
@@ -317,7 +338,7 @@ function toRadians(degrees) {
 function toDegrees(radians) {
     return radians * 180 / Math.PI;
 }
-  
+
 // Bearing formula, between two 2D points, clockwise angle between north and (start,dest)
 function bearing(startLat, startLng, destLat, destLng){
     startLat = toRadians(startLat);
