@@ -3,7 +3,7 @@ import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 1;
+const minimal_Display_Distance = 0.05;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
@@ -108,7 +108,6 @@ function checkSupportedState() {
 function onButtonClicked() {
     if (!xrSession) {
         is_Fullscreen_Active = true;
-        console.log("we just enterd button click");
         navigator.xr.requestSession('immersive-ar', {
             optionalFeatures: ['dom-overlay'],
             requiredFeatures: ['local', 'hit-test'],
