@@ -280,10 +280,10 @@ function handler_Display(delta_Angle) {
                 mesh.scale.y = Math.random() * 2 + 1;
                 scene.add(mesh);
             }
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
         }
         else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
         }
     }
 }
