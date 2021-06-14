@@ -9,7 +9,7 @@ let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
 const target_Long = -1.58742;
 const target_Lat = 47.23790;
-const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
+const angle_Threshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
@@ -265,12 +265,12 @@ function handler_Location(position) {
 }
 
 // Handles overlay display
-// teomporarly handles object placement, to be removed
+// temporarily handles object placement, to be removed
 function handler_Display(delta_Angle) {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
-        if(min_Angle<angle_Treshold){
+        if (min_Angle<angle_Threshold){
             if (reticle.visible && object_Placed<1) {
                 object_Placed = object_Placed + 1;
                 const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
@@ -285,27 +285,33 @@ function handler_Display(delta_Angle) {
 }
 
 function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
-    var overlay_Message = ``;
-    if(min_Angle<angle_Treshold){
-        if (reticle.visible && object_Placed<1) {
-            object_Placed = object_Placed + 1;
-            const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.setFromMatrixPosition(reticle.matrix);
-            mesh.scale.y = Math.random() * 2 + 1;
-            scene.add(mesh);
+    var overlay_Distance = ``;
+    var overlay_Orientation_Angle = ``;
+    var orientation_Direction = abs_Delta_Angle > 180 ? `left` : `right`;
+     
+    if (distance_Device_Target>minimal_Display_Distance) {
+        // notifying the user that he is too far from the object
+        overlay_Distance = `You have to get closer (${(distance_Device_Target - minimal_Display_Distance).toFixed(3)}km) \n`;
+    }
+    else {
+        overlay_Distance = `You are close enough ! \n`;
+        if (min_Angle<angle_Threshold){
+            overlay_Orientation_Angle = `You should be able to see the object !`;
         }
-        visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
+        else{
+            overlay_Orientation_Angle = `Try to reduce the angle : ${min_Angle.toFixed(0)} by rotating `;
+        }
     }
-    else{
-        visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
-    }
+    // Adding direction only if it's needed
+    overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
+    visual_Display.innerHTML = distance_Device_Target < minimal_Display_Distance ? 
+        overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;        
     return;
 }
 
 /// /// /// /// /// /// /// ///
 /// /// /// /// /// /// /// ///
-/// /// AUXILIARIES /// /// ///
+/// ///   AUXILIARIES   /// ///
 /// /// /// /// /// /// /// ///
 /// /// /// /// /// /// /// ///
 
@@ -368,9 +374,9 @@ function compassHeading(alpha, beta, gamma) {
     // Calculate compass heading
     var compassHeading = Math.atan(rA / rB);
     // Convert from half unit circle to whole unit circle
-    if(rB < 0) {
+    if (rB < 0) {
       compassHeading += Math.PI;
-    }else if(rA < 0) {
+    }else if (rA < 0) {
       compassHeading += 2 * Math.PI;
     }
     // Convert radians to degrees
