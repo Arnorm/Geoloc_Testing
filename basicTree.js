@@ -271,7 +271,6 @@ function handler_Display(delta_Angle) {
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
         if(min_Angle<angle_Treshold){
-            console.log(`object placed : ${object_Placed}`);
             if (reticle.visible && object_Placed<1) {
                 object_Placed = object_Placed + 1;
                 const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
@@ -280,20 +279,15 @@ function handler_Display(delta_Angle) {
                 mesh.scale.y = Math.random() * 2 + 1;
                 scene.add(mesh);
             }
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
         }
-        else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
-        }
+        get_Overlay_Message(abs_Delta_Angle, min_Angle);
     }
 }
 
-function get_Overlay_Message(min_angle) {
+function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
     var overlay_Message = ``;
     if(min_Angle<angle_Treshold){
-        console.log(`object placed : ${object_Placed}`);
         if (reticle.visible && object_Placed<1) {
-            console.log(`tried to place the object here`);
             object_Placed = object_Placed + 1;
             const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
             const mesh = new THREE.Mesh(geometry, material);
@@ -301,12 +295,12 @@ function get_Overlay_Message(min_angle) {
             mesh.scale.y = Math.random() * 2 + 1;
             scene.add(mesh);
         }
-        visual_Display.innerHTML = `You found it !`;
+        visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
     }
     else{
-        visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)}`;
+        visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${abs_Delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(4)}`;
     }
-    return overlay_Message;
+    return;
 }
 
 /// /// /// /// /// /// /// ///
