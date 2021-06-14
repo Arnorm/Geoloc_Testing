@@ -2,10 +2,13 @@
 import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
+// distance at which we consider the user to be "near" the object, in km
+const minimal_Display_Distance = 0.1;
+let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
-const target_Long = 2.295284992068256;
-const target_Lat = 48.87397517044594;
+const target_Long = -1.58742;
+const target_Lat = 47.23790;
 const angle_Treshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
@@ -241,7 +244,6 @@ function startCompass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     var delta_Angle = bearing_Device_Target - compass;
-    //displayed_Logs_Orientation.innerHTML = `Delta angle is : ${delta_Angle.toFixed(1)}, we are in orientation still`;
     handler_Display(delta_Angle);
 }
 
@@ -253,7 +255,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    var distance_Device_Target = calcCrow(
+    distance_Device_Target = calcCrow(
         position.coords.latitude,
         position.coords.longitude,
         target_Lat,
@@ -282,7 +284,7 @@ function handler_Display(delta_Angle) {
             visual_Display.innerHTML = `You found it !`;
         }
         else{
-            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${delta_Angle.toFixed(0)}`;
+            visual_Display.innerHTML = `Try to reduce the angle : ${min_Angle.toFixed(0)} || or ${delta_Angle.toFixed(0)} distance ${distance_Device_Target.toFixed(0)}`;
         }
     }
 }
