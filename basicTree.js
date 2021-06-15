@@ -352,5 +352,5 @@ function bearing(startLat, startLng, destLat, destLng){
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
     var bearing_ = Math.atan2(y, x);
     bearing_ = toDegrees(bearing_);
-    return (bearing_ + 360) % 360;
+    return (((bearing_ % 360) + 360) % 360);
 }
