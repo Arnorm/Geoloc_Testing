@@ -80,13 +80,12 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
-    // arrow
-    const arrow = new THREE.Mesh(
-        new THREE.SphereGeometry( 10, 10, 10 ),
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: .1 })
-    );
-    arrow.lookAt(camera.position);
-    scene.add(arrow);
+    // later this will be the arrow
+    const geometry = new THREE.SphereGeometry(5, 32, 32);
+    const material = new THREE.MeshBasicMaterial({color: 0xffff00});
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.lookAt(camera.position);
+    scene.add(sphere);
 };
 
 function init_Sensors() {
