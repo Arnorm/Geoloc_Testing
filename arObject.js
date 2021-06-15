@@ -1,6 +1,6 @@
 // arObject class
 
-export default class Position {
+export class Position {
     constructor(lat, lng) {
         this.lat = lat;
         this.lng = lng;
@@ -15,7 +15,7 @@ export default class Position {
     }
 }
 
-export default class ArObject {
+export class ArObject {
     constructor(position, name, text) {
         this.position = position;
         this.name = name;
