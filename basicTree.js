@@ -17,6 +17,8 @@ const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
+// multiplier at which we start to display the reticle
+let reticule_range = 2;
 let object_Placed = 0;
 let visual_Display = document.getElementById("visual_Display"); // Div that the user sees in overlay
 let renderer = null;
@@ -188,25 +190,26 @@ function updateAnimation() {
     }  
 }
 
+// Called each AR frame
 function onXRFrame(t, frame) {
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
-
-    if (xrHitTestSource) {
-        // obtain hit test results by casting a ray from the center of device screen
-        // into AR view. Results indicate that ray intersected with one or more detected surfaces
-        const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-        if (hitTestResults.length) {
-        // obtain a local pose at the intersection point
-        const pose = hitTestResults[0].getPose(xrRefSpace);
-        // place a reticle at the intersection point
-        reticle.matrix.fromArray(pose.transform.matrix);
-        reticle.visible = true;
+    if (distance_Device_Target > (reticule_range * minimal_Display_Distance)){
+        if (xrHitTestSource) {
+            // obtain hit test results by casting a ray from the center of device screen
+            // into AR view. Results indicate that ray intersected with one or more detected surfaces
+            const hitTestResults = frame.getHitTestResults(xrHitTestSource);
+            if (hitTestResults.length) {
+            // obtain a local pose at the intersection point
+            const pose = hitTestResults[0].getPose(xrRefSpace);
+            // place a reticle at the intersection point
+            reticle.matrix.fromArray(pose.transform.matrix);
+            reticle.visible = true;
+            }
+        } else {  // do not show a reticle if no surfaces are intersected
+            reticle.visible = false;
         }
-    } else {  // do not show a reticle if no surfaces are intersected
-        reticle.visible = false;
     }
-
     // update object animation
     updateAnimation();
     // bind our gl context that was created with WebXR to threejs renderer
