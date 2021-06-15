@@ -6,6 +6,15 @@ export class Position {
         this.lng = lng;
     }
 
+    // setters 
+    set lat(_lat) {
+        this.lat = lat;
+    }
+
+    set lng(_lng) {
+        this.lng = _lng
+    }
+
     // getters 
     get lat() {
         return this.lat;
@@ -20,6 +29,17 @@ export class ArObject {
         this.position = position;
         this.name = name;
         this.text = text;
+    }
+
+    // setters
+    set position(_position) {
+        this.position = _position;
+    }
+    set name(_name) {
+        this.name = _name;
+    }
+    set text(_text) {
+        this.text = _text;
     }
 
     // getters
