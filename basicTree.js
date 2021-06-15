@@ -17,6 +17,20 @@ const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
+
+/// ARROW HELPER ///
+const dir = new THREE.Vector3( 1, 2, 0 );
+
+//normalize the direction vector (convert to vector of length 1)
+dir.normalize();
+
+const origin = new THREE.Vector3( 0, 0, 0 );
+const length = 3;
+const hex = 0xffff00;
+
+let arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+/////////////////////////
+
 // multiplier at which we start to display the reticle
 let reticule_range = 2;
 let object_Placed = 0;
@@ -80,6 +94,8 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
+    arrowHelper.attach(camera);
+    scene.add(arrowHelper);    
 };
 
 function init_Sensors() {
