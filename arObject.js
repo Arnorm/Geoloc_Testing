@@ -1,30 +1,6 @@
 // arObject class
 
-export class Position {
-    constructor(lat, lng) {
-        this.lat = lat;
-        this.lng = lng;
-    }
-
-    // setters 
-    set lat(_lat) {
-        this.lat = lat;
-    }
-
-    set lng(_lng) {
-        this.lng = _lng
-    }
-
-    // getters 
-    get lat() {
-        return this.lat;
-    }
-    get lng() {
-        return this.lng;
-    }
-}
-
-export class ArObject {
+export default class ArObject {
     constructor(position, name, text) {
         this.position = position;
         this.name = name;

@@ -1,6 +1,7 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
-import {Position, ArObject} from './arObject.js'; 
+import ArObject from './arObject.js'; 
+import Position from './position.js'; 
 
 
 // Variables for sensors
