@@ -1,5 +1,5 @@
 // arObject class
-
+/*
 export default class ArObject {
     constructor(position, name, text) {
         this.position = position;
@@ -29,3 +29,4 @@ export default class ArObject {
         return this.text;
     }
 }
+*/

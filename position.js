@@ -1,5 +1,5 @@
 // Position class
-
+/*
 export default class Position {
     constructor(lat, lng) {
         this.lat = lat;
@@ -23,3 +23,4 @@ export default class Position {
         return this.lng;
     }
 }
+*/
