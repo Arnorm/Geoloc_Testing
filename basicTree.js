@@ -125,7 +125,6 @@ function onSessionStarted(session) {
 
     // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
-        info.innerHTML = 'DOM Overlay type: ' + session.domOverlayState.type;
     }
 
     // create a canvas element and WebGL context for rendering
