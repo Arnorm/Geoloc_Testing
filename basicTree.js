@@ -3,12 +3,12 @@ import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 0.05;
+const minimal_Display_Distance = 1;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
-const target_Long = -1.58742;
-const target_Lat = 47.23790;
+const target_Long = -1.5343356903121372;
+const target_Lat = 47.216620620473684;
 const angle_Threshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
