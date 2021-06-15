@@ -3,7 +3,7 @@ import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 0.05;
+const minimal_Display_Distance = 1;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
@@ -256,7 +256,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    distance_Device_Target = calcCrow(
+    distance_Device_Target = calc_Crow(
         position.coords.latitude,
         position.coords.longitude,
         target_Lat,
@@ -291,7 +291,7 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
     var orientation_Direction = abs_Delta_Angle > 180 ? `left` : `right`;
     if (distance_Device_Target > minimal_Display_Distance) {
         // notifying the user that he is too far from the object
-        overlay_Distance = `You have to get closer (${(distance_Device_Target - minimal_Display_Distance).toFixed(3)}km) \n`;
+        overlay_Distance = `You have to get closer (${(distance_Device_Target).toFixed(3)}km) \n`;
     }
     else {
         overlay_Distance = `You are close enough ! \n`;
@@ -317,13 +317,13 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
 /// /// /// /// /// /// /// ///
 
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
-function calcCrow(startLat, startLng, destLat, destLng) 
+function calc_Crow(startLat, startLng, destLat, destLng) 
 {
     var R = 6371; // km
-    var dLat = toRadians(destLat - startLat);
-    var dLon = toRadians(destLng - startLng);
-    var startLat = toRadians(startLat);
-    var destLat = toRadians(destLat);
+    var dLat = to_Radians(destLat - startLat);
+    var dLon = to_Radians(destLng - startLng);
+    var startLat = to_Radians(startLat);
+    var destLat = to_Radians(destLat);
     var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.sin(dLon / 2) * Math.sin(dLon/2) * Math.cos(startLat) * Math.cos(destLat); 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
@@ -332,25 +332,25 @@ function calcCrow(startLat, startLng, destLat, destLng)
 }
 
 // Converts from degrees to radians.
-function toRadians(degrees) {
+function to_Radians(degrees) {
     return degrees * Math.PI / 180;
   };
    
 // Converts from radians to degrees.
-function toDegrees(radians) {
+function to_Degrees(radians) {
     return radians * 180 / Math.PI;
 }
 
 // Bearing formula, between two 2D points, clockwise angle between north and (start,dest)
 function bearing(startLat, startLng, destLat, destLng){
-    startLat = toRadians(startLat);
-    startLng = toRadians(startLng);
-    destLat = toRadians(destLat);
-    destLng = toRadians(destLng);
+    startLat = to_Radians(startLat);
+    startLng = to_Radians(startLng);
+    destLat = to_Radians(destLat);
+    destLng = to_Radians(destLng);
     const y = Math.sin(destLng - startLng) * Math.cos(destLat);
     const x = Math.cos(startLat) * Math.sin(destLat) -
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
     var bearing_ = Math.atan2(y, x);
-    bearing_ = toDegrees(bearing_);
+    bearing_ = to_Degrees(bearing_);
     return (((bearing_ % 360) + 360) % 360);
 }
