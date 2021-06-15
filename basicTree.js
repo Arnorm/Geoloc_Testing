@@ -297,7 +297,7 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
             overlay_Orientation_Angle = `You should be able to see the object !`;
         }
         else{
-            overlay_Orientation_Angle = `Try to reduce the angle : ${abs_Delta_Angle.toFixed(0)} by rotating `;
+            overlay_Orientation_Angle = `Try to reduce the angle : ${min_Angle.toFixed(0)} by rotating `;
         }
     }
     // Adding direction only if it's needed
