@@ -243,6 +243,8 @@ function startCompass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     delta_Angle = bearing_Device_Target - compass;
+    console.log(`alpha : ${e.alpha}`);
+    console.log(`compass : ${compass}`);
     handler_Display();
 }
 
@@ -254,8 +256,6 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
-    console.log(bearing_Device_Target);
-    console.log(compass);
     distance_Device_Target = calcCrow(
         position.coords.latitude,
         position.coords.longitude,
