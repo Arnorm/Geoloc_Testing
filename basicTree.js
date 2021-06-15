@@ -24,8 +24,8 @@ const dir = new THREE.Vector3( 1, 2, 0 );
 //normalize the direction vector (convert to vector of length 1)
 dir.normalize();
 
-const origin = new THREE.Vector3( 0, 0, 0 );
-const length = 3;
+const origin = new THREE.Vector3( 0.2, 0.5, 10 );
+const length = 5;
 const hex = 0xffff00;
 
 let arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
