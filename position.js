@@ -8,7 +8,7 @@ export default class Position {
 
     // setters 
     set lat(_lat) {
-        this.lat = lat;
+        this.lat = _lat;
     }
 
     set lng(_lng) {
