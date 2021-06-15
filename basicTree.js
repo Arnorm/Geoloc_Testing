@@ -254,6 +254,7 @@ function handler_Location(position) {
         target_Lat,
         target_Long
     );
+    console.log(bearing);
     distance_Device_Target = calcCrow(
         position.coords.latitude,
         position.coords.longitude,
@@ -297,14 +298,14 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
             overlay_Orientation_Angle = `You should be able to see the object !`;
         }
         else{
-            overlay_Orientation_Angle = `Try to reduce the angle : ${min_Angle.toFixed(0)} by rotating `;
+            overlay_Orientation_Angle = `Try to reduce the angle : ${min_Angle.toFixed(0)} \n by rotating `;
         }
     }
     // Adding direction only if it's needed
     overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
     visual_Display.innerHTML = distance_Device_Target < minimal_Display_Distance ? 
         overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;
-    visual_Display.innerHTML = visual_Display.innerHTML + `\n Also : ${delta_Angle.toFixed(0)}`;      
+    visual_Display.innerHTML = visual_Display.innerHTML + `\n Also : ${abs_Delta_Angle.toFixed(0)}`;      
     return;
 }
 
