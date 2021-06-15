@@ -167,7 +167,7 @@ function onSessionStarted(session) {
         session.requestAnimationFrame(onXRFrame);
     });
 
-    document.getElementById("overlay").addEventListener('click', placeObject);
+    //document.getElementById("overlay").addEventListener('click', placeObject); // don't want this event for now
 
     // initialize three.js scene
     initScene(gl, session);
