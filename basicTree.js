@@ -1,7 +1,7 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
-import ArObject from './arObject.js'; 
-import Position from './position.js'; 
+//import ArObject from './arObject.js'; 
+//import Position from './position.js'; 
 
 
 // Variables for sensors
@@ -364,4 +364,38 @@ function bearing(startLat, startLng, destLat, destLng){
     var bearing_ = Math.atan2(y, x);
     bearing_ = to_Degrees(bearing_);
     return (((bearing_ % 360) + 360) % 360);
+}
+
+class ArObject {
+    constructor(position, name, text) {
+        this.position = position;
+        this.name = name;
+        this.text = text;
+    }
+
+    // getters
+    get position() {
+        return this.position;
+    }
+    get name() {
+        return this.name;
+    }
+    get text() {
+        return this.text;
+    }
+}
+
+class Position {
+    constructor(lat, lng) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    // getters 
+    get lat() {
+        return this.lat;
+    }
+    get lng() {
+        return this.lng;
+    }
 }
