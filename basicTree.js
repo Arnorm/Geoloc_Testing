@@ -3,12 +3,12 @@ import * as THREE from './threeJs/build/three.module.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 1;
+const minimal_Display_Distance = 0.05;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let compass = 0;
-const target_Long = -1.5343356903121372;
-const target_Lat = 47.216620620473684;
+const target_Long = -1.5401977068857935;
+const target_Lat = 47.214438493730896;
 const angle_Threshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
@@ -287,18 +287,17 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
     var overlay_Distance = ``;
     var overlay_Orientation_Angle = ``;
     var orientation_Direction = abs_Delta_Angle > 180 ? `left` : `right`;
-     
-    if (distance_Device_Target>minimal_Display_Distance) {
+    if (distance_Device_Target > minimal_Display_Distance) {
         // notifying the user that he is too far from the object
         overlay_Distance = `You have to get closer (${(distance_Device_Target - minimal_Display_Distance).toFixed(3)}km) \n`;
     }
     else {
         overlay_Distance = `You are close enough ! \n`;
-        if (min_Angle<angle_Threshold){
+        if (abs_Delta_Angle < angle_Threshold){
             overlay_Orientation_Angle = `You should be able to see the object !`;
         }
         else{
-            overlay_Orientation_Angle = `Try to reduce the angle : ${min_Angle.toFixed(0)} by rotating `;
+            overlay_Orientation_Angle = `Try to reduce the angle : ${abs_Delta_Angle.toFixed(0)} by rotating `;
         }
     }
     // Adding direction only if it's needed
@@ -318,13 +317,13 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
 function calcCrow(startLat, startLng, destLat, destLng) 
 {
     var R = 6371; // km
-    var dLat = toRadians(destLat-startLat);
-    var dLon = toRadians(destLng-startLng);
+    var dLat = toRadians(destLat - startLat);
+    var dLon = toRadians(destLng - startLng);
     var startLat = toRadians(startLat);
     var destLat = toRadians(destLat);
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(startLat) * Math.cos(destLat); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon/2) * Math.cos(startLat) * Math.cos(destLat); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
     var d = R * c;
     return d;
 }
