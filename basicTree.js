@@ -1,5 +1,7 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
+import {Position, ArObject} from './arObject.js'; 
+
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
@@ -13,20 +15,23 @@ const target_Lat = 47.214438493730896;
 const angle_Threshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
-    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/(iPod | iPhone | iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
 // multiplier at which we start to display the reticle
 let reticule_range = 2;
 let object_Placed = 0;
-let visual_Display = document.getElementById("visual_Display"); // Div that the user sees in overlay
+// Div that the user sees in overlay
+let visual_Display = document.getElementById("visual_Display"); 
 let renderer = null;
 let scene = null;
 let camera = null;
 let mixer = null;
-let reticle = null; // Circle that the user sees when we may place an object (plane detection)
-let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); // Object placed "onTouch"
+// Circle that the user sees when we may place an object (plane detection)
+let reticle = null; 
+// Object placed "onTouch"
+let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); 
 let lastFrame = Date.now();
 // button to start XR experience
 const xrButton = document.getElementById('xr-button');
@@ -40,6 +45,10 @@ let xrRefSpace = null;
 let xrHitTestSource = null;
 // Canvas OpenGL context used for rendering
 let gl = null;
+
+// init class
+const target_Position = new Position(target_Long, target_Lat);
+const target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
@@ -74,6 +83,8 @@ const initScene = (gl, session) => {
 };
 
 function init_Sensors() {
+    console.log(target_Position);
+    console.log(target_Ar_Object);
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
@@ -96,7 +107,7 @@ function checkXR() {
 function checkSupportedState() {
     navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
         if (supported) {
-        // calling init_Sensors to get informations
+        // calling init_Sensors to get information
         // Need to call them before fullscreen for permission to be seen by user
         init_Sensors();
         xrButton.innerHTML = 'Enter AR';
@@ -210,16 +221,11 @@ function onXRFrame(t, frame) {
             reticle.visible = false;
         }
     }
-    // update object animation
     updateAnimation();
     // bind our gl context that was created with WebXR to threejs renderer
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
-    // render the scene
     renderer.render(scene, camera);
 }
-
-// triggers everything
-checkXR();
 
 /// /// /// /// /// /// /// ///
 /// /// /// /// /// /// /// ///
@@ -246,8 +252,6 @@ function startCompass() {
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
     delta_Angle = bearing_Device_Target - compass;
-    console.log(`alpha : ${e.alpha}`);
-    console.log(`compass : ${compass}`);
     handler_Display();
 }
 
@@ -273,9 +277,9 @@ function handler_Location(position) {
 function handler_Display() {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
-    if (is_Fullscreen_Active==true) {
+    if (is_Fullscreen_Active === true) {
         if (min_Angle<angle_Threshold){
-            if (reticle.visible && object_Placed<1) {
+            if (reticle.visible && object_Placed < 1) {
                 object_Placed = object_Placed + 1;
                 const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
                 const mesh = new THREE.Mesh(geometry, material);
@@ -312,6 +316,9 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
     visual_Display.innerHTML = visual_Display.innerHTML + `\n Also : ${abs_Delta_Angle.toFixed(0)}`;      
     return;
 }
+
+// triggers everything
+checkXR();
 
 /// /// /// /// /// /// /// ///
 /// /// /// /// /// /// /// ///
