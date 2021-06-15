@@ -94,7 +94,7 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
-    arrowHelper.attach(camera);
+    camera.attach(arrowHelper);
     scene.add(arrowHelper);    
 };
 
