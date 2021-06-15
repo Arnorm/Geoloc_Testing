@@ -2,22 +2,6 @@
 import * as THREE from './threeJs/build/three.module.js';
 import ArObject from './arObject.js'; 
 import Position from './position.js'; 
-/*
-class ArObject {
-    constructor(position, name, text) {
-        this.position = position;
-        this.name = name;
-        this.text = text;
-    }
-}
-
-class Position {
-    constructor(lat, lng) {
-        this.lat = lat;
-        this.lng = lng;
-    }
-}
-*/
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
@@ -26,8 +10,6 @@ let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
 let compass = 0;
-const target_Long = -1.5401977068857935;
-const target_Lat = 47.214438493730896;
 const angle_Threshold = 20; // To be changed later, maybe even based on the camera of the device
 var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
@@ -63,6 +45,8 @@ let xrHitTestSource = null;
 let gl = null;
 
 // init class
+const target_Long = -1.5401977068857935;
+const target_Lat = 47.214438493730896;
 let target_Position = new Position(target_Long, target_Lat);
 let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
@@ -222,6 +206,7 @@ function onXRFrame(t, frame) {
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
     if (distance_Device_Target > (reticule_range * minimal_Display_Distance)){
+        console.log("we should see the reticle");
         if (xrHitTestSource) {
             // obtain hit test results by casting a ray from the center of device screen
             // into AR view. Results indicate that ray intersected with one or more detected surfaces
