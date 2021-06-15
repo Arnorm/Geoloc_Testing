@@ -9,31 +9,12 @@ class ArObject {
         this.name = name;
         this.text = text;
     }
-
-    // getters
-    get position() {
-        return this.position;
-    }
-    get name() {
-        return this.name;
-    }
-    get text() {
-        return this.text;
-    }
 }
 
 class Position {
     constructor(lat, lng) {
         this.lat = lat;
         this.lng = lng;
-    }
-
-    // getters 
-    get lat() {
-        return this.lat;
-    }
-    get lng() {
-        return this.lng;
     }
 }
 
@@ -82,8 +63,8 @@ let xrHitTestSource = null;
 let gl = null;
 
 // init class
-const target_Position = new Position(target_Long, target_Lat);
-const target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
+let target_Position = new Position(target_Long, target_Lat);
+let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
