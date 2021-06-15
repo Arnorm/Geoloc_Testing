@@ -205,8 +205,7 @@ function updateAnimation() {
 function onXRFrame(t, frame) {
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
-    if (distance_Device_Target > (reticule_range * minimal_Display_Distance)){
-        console.log("we should see the reticle");
+    if (distance_Device_Target < (reticule_range * minimal_Display_Distance)){
         if (xrHitTestSource) {
             // obtain hit test results by casting a ray from the center of device screen
             // into AR view. Results indicate that ray intersected with one or more detected surfaces
