@@ -17,20 +17,6 @@ const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/AppleWebKit/);
 
 // Variables for AR
-
-/// ARROW HELPER ///
-const dir = new THREE.Vector3( 1, 2, 0 );
-
-//normalize the direction vector (convert to vector of length 1)
-dir.normalize();
-
-const origin = new THREE.Vector3( 0.2, 0.5, 10 );
-const length = 5;
-const hex = 0xffff00;
-
-let arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
-/////////////////////////
-
 // multiplier at which we start to display the reticle
 let reticule_range = 2;
 let object_Placed = 0;
@@ -94,8 +80,13 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
-    camera.attach(arrowHelper);
-    scene.add(arrowHelper);    
+    // arrow
+    const arrow = new THREE.Mesh(
+        new THREE.SphereGeometry( 10, 10, 10 ),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: .1 })
+    );
+    arrow.lookAt(camera.position);
+    scene.add(arrow);
 };
 
 function init_Sensors() {
@@ -227,11 +218,11 @@ function onXRFrame(t, frame) {
             // into AR view. Results indicate that ray intersected with one or more detected surfaces
             const hitTestResults = frame.getHitTestResults(xrHitTestSource);
             if (hitTestResults.length) {
-            // obtain a local pose at the intersection point
-            const pose = hitTestResults[0].getPose(xrRefSpace);
-            // place a reticle at the intersection point
-            reticle.matrix.fromArray(pose.transform.matrix);
-            reticle.visible = true;
+                // obtain a local pose at the intersection point
+                const pose = hitTestResults[0].getPose(xrRefSpace);
+                // place a reticle at the intersection point
+                reticle.matrix.fromArray(pose.transform.matrix);
+                reticle.visible = true;
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
