@@ -6,6 +6,7 @@ import * as THREE from './threeJs/build/three.module.js';
 const minimal_Display_Distance = 1;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
+let delta_Angle = null;
 let compass = 0;
 const target_Long = -1.5401977068857935;
 const target_Lat = 47.214438493730896;
@@ -242,8 +243,8 @@ function startCompass() {
 // Handles angles sensor
 function handler_Orientation(e) {
     compass = e.webkitCompassHeading || Math.abs(e.alpha - 360); // not always defined otherwise
-    var delta_Angle = bearing_Device_Target - compass;
-    handler_Display(delta_Angle);
+    delta_Angle = bearing_Device_Target - compass;
+    handler_Display();
 }
 
 // Handles location sensor
@@ -265,7 +266,7 @@ function handler_Location(position) {
 
 // Handles overlay display
 // temporarily handles object placement, to be removed
-function handler_Display(delta_Angle) {
+function handler_Display() {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     if (is_Fullscreen_Active==true) {
@@ -303,7 +304,8 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
     // Adding direction only if it's needed
     overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
     visual_Display.innerHTML = distance_Device_Target < minimal_Display_Distance ? 
-        overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;        
+        overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;
+    visual_Display.innerHTML = visual_Display.innerHTML + `\n Also : ${delta_Angle.toFixed(0)}`;      
     return;
 }
 
