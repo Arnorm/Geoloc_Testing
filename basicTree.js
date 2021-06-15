@@ -1,8 +1,8 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
-//import ArObject from './arObject.js'; 
-//import Position from './position.js'; 
-
+import ArObject from './arObject.js'; 
+import Position from './position.js'; 
+/*
 class ArObject {
     constructor(position, name, text) {
         this.position = position;
@@ -17,7 +17,7 @@ class Position {
         this.lng = lng;
     }
 }
-
+*/
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
