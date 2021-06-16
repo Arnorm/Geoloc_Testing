@@ -86,7 +86,7 @@ const initScene = (gl, session) => {
     const sphere = new THREE.Mesh(geometry, material);
     //sphere.lookAt(camera.position);
     scene.add(sphere);
-    console.log(scene.getWorldPosition(sphere));
+    console.log(sphere.getWorldPosition(new THREE.Vector3()));
 };
 
 function init_Sensors() {
