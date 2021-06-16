@@ -18,6 +18,7 @@ const isIOS = // different handlings, IOS is not tested yet
 
 // Variables for AR
 // multiplier at which we start to display the reticle
+let camera_World_Direction = new THREE.Vector3(0,0,0);
 let a = new THREE.Vector3(1,1,1);
 let reticule_range = 2;
 let object_Placed = 0;
@@ -54,6 +55,7 @@ let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.getWorldDirection(camera_World_Direction);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
     light.position.z = 1;
     light.position.y = 5;
@@ -214,6 +216,7 @@ function updateAnimation() {
 function onXRFrame(t, frame) {
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
+    console.log(camera_World_Direction);
     if (distance_Device_Target < (reticule_range * minimal_Display_Distance)){
         if (xrHitTestSource) {
             // obtain hit test results by casting a ray from the center of device screen
