@@ -220,6 +220,7 @@ function onXRFrame(t, frame) {
             // into AR view. Results indicate that ray intersected with one or more detected surfaces
             const hitTestResults = frame.getHitTestResults(xrHitTestSource);
             if (hitTestResults.length) {
+                console.log(hitTestResults.length);
                 // obtain a local pose at the intersection point
                 const pose = hitTestResults[0].getPose(xrRefSpace);
                 // place a reticle at the intersection point
