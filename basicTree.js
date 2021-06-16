@@ -85,6 +85,7 @@ const initScene = (gl, session) => {
     const material = new THREE.MeshBasicMaterial({color: 0xffff00});
     const sphere = new THREE.Mesh(geometry, material);
     //sphere.lookAt(camera.position);
+    sphere.translateZ(1);
     scene.add(sphere);
     let a = new THREE.Vector3(1,1,1);
     sphere.getWorldPosition(a);
