@@ -86,12 +86,10 @@ const initScene = (gl, session) => {
     const sphere = new THREE.Mesh(geometry, material);
     //sphere.lookAt(camera.position);
     scene.add(sphere);
-    console.log(sphere.getWorldPosition);
+    console.log(scene.getWorldPosition(sphere));
 };
 
 function init_Sensors() {
-    console.log(target_Position);
-    console.log(target_Ar_Object);
     navigator.geolocation.watchPosition(handler_Location);
     if (!isIOS) {
     // if not on IOS, we add this listener to handle Orientation
@@ -320,7 +318,6 @@ function get_Overlay_Message(abs_Delta_Angle, min_Angle) {
     overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
     visual_Display.innerHTML = distance_Device_Target < minimal_Display_Distance ? 
         overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;
-    visual_Display.innerHTML = visual_Display.innerHTML + `\n Also : ${abs_Delta_Angle.toFixed(0)}`;      
     return;
 }
 
