@@ -18,6 +18,7 @@ const isIOS = // different handlings, IOS is not tested yet
 
 // Variables for AR
 // multiplier at which we start to display the reticle
+let a = new THREE.Vector3(1,1,1);
 let reticule_range = 2;
 let object_Placed = 0;
 // Div that the user sees in overlay
@@ -87,7 +88,7 @@ const initScene = (gl, session) => {
     //sphere.lookAt(camera.position);
     sphere.translateZ(1);
     scene.add(sphere);
-    let a = new THREE.Vector3(1,1,1);
+    
     sphere.getWorldPosition(a);
     console.log(a);
 };
