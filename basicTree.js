@@ -55,7 +55,6 @@ let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock
 const initScene = (gl, session) => {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.getWorldDirection(camera_World_Direction);
     var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
     light.position.z = 1;
     light.position.y = 5;
@@ -88,11 +87,8 @@ const initScene = (gl, session) => {
     const material = new THREE.MeshBasicMaterial({color: 0xffff00});
     const sphere = new THREE.Mesh(geometry, material);
     //sphere.lookAt(camera.position);
-    sphere.translateZ(1);
+    sphere.translateZ(-2);
     scene.add(sphere);
-    
-    sphere.getWorldPosition(a);
-    console.log(a);
 };
 
 function init_Sensors() {
@@ -216,7 +212,6 @@ function updateAnimation() {
 function onXRFrame(t, frame) {
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
-    console.log(camera_World_Direction);
     if (distance_Device_Target < (reticule_range * minimal_Display_Distance)){
         if (xrHitTestSource) {
             // obtain hit test results by casting a ray from the center of device screen
@@ -229,7 +224,7 @@ function onXRFrame(t, frame) {
                 reticle.matrix.fromArray(pose.transform.matrix);
                 reticle.visible = true;
                 reticle.getWorldPosition(a);
-                info.innerHTML = `${a}`;
+                console.log(a);
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
