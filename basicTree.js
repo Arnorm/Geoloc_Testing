@@ -224,6 +224,8 @@ function onXRFrame(t, frame) {
                 // place a reticle at the intersection point
                 reticle.matrix.fromArray(pose.transform.matrix);
                 reticle.visible = true;
+                reticle.getWorldPosition(a);
+                info.innerHTML = `${a}`;
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
