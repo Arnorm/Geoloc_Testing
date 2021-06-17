@@ -25,7 +25,7 @@ let object_Placed = 0;
 let visual_Display = document.getElementById("visual_Display"); 
 let object_Info = document.getElementById("object-info");
 // this logic should be moved elsewhere as it won't be just this later on
-object_Info.innerHTML = "SomeMockInfo about the object";
+object_Info.innerHTML = `SomeMockInfo about the object \n which could be name, size, year etc ...`;
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -126,6 +126,7 @@ function checkSupportedState() {
         xr_Button.innerHTML = 'Enter AR';
         xr_Button.addEventListener('click', onXrButtonClicked);
         xr_Button.disabled = !supported;
+        info_Button.innerHTML = object_Info.hidden ? `Show info` : `Hide info`;
         info_Button.addEventListener('click', onInfoButtonClicked);
         info_Button.disabled = !supported;
         } else {
@@ -148,8 +149,10 @@ function onXrButtonClicked() {
 }
 
 function onInfoButtonClicked() {
-    info_Button.innerHTML = object_Info.hidden ? `Show info` : `Hide info`;
-    object_Info.hidden = !object_Info.hidden;
+    if (!info_Button.hidden) {
+        info_Button.innerHTML = object_Info.hidden ? `Show info` : `Hide info`;
+        object_Info.hidden = !object_Info.hidden;
+    }
 }
 
 function onSessionStarted(session) {
@@ -207,6 +210,7 @@ function updateAnimation() {
 
 // Called each AR frame
 function onXRFrame(t, frame) {
+    updateInfoButton();
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
     if (distance_Device_Target < (reticule_range * minimal_Display_Distance)){
@@ -229,6 +233,22 @@ function onXRFrame(t, frame) {
     // bind our gl context that was created with WebXR to threejs renderer
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
     renderer.render(scene, camera);
+}
+
+function updateInfoButton() {
+    var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
+    var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
+    if (is_Fullscreen_Active === true) {
+        if (min_Angle<angle_Threshold){
+            if (object_Placed > 0) {
+                info_Button.hidden = false;
+            }
+        }
+        else {
+            info_Button.hidden = true;
+            object_Info.hidden = true;
+        }
+    }
 }
 
 // Only for IOS, not tested YET
