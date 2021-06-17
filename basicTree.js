@@ -126,6 +126,7 @@ function checkSupportedState() {
         xr_Button.innerHTML = 'Enter AR';
         xr_Button.addEventListener('click', onXrButtonClicked);
         xr_Button.disabled = !supported;
+        info_Button.hidden = false;
         info_Button.addEventListener('click', onInfoButtonClicked);
         info_Button.disabled = !supported;
         } else {
