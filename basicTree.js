@@ -15,7 +15,6 @@ var bearing_Device_Target = 0; // Angles declared as globals for now
 const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/(iPod | iPhone | iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
-
 // Variables for AR
 // multiplier at which we start to display the reticle
 let camera_World_Direction = new THREE.Vector3(0,0,0);
@@ -126,7 +125,7 @@ function checkSupportedState() {
         xr_Button.addEventListener('click', onXrButtonClicked);
         xr_Button.disabled = !supported;
         info_Button.addEventListener('click', onInfoButtonClicked);
-        xr_Button.disabled = !supported;
+        info_Button.disabled = !supported;
         } else {
         xr_Button.innerHTML = 'AR not found';
         }
