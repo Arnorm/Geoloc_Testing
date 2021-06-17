@@ -5,7 +5,7 @@ import Position from './position.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 0.001;
+const minimal_Display_Distance = 2;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
