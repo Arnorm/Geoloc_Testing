@@ -5,7 +5,7 @@ import Position from './position.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 2;
+const minimal_Display_Distance = 0.01;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
@@ -51,8 +51,8 @@ let xrHitTestSource = null;
 let gl = null;
 
 // init class
-const target_Long = -1.5811203418321496;
-const target_Lat = 47.2357485166728;
+const target_Long = -1.5816567683021718;
+const target_Lat = 47.23308004489114;
 let target_Position = new Position(target_Long, target_Lat);
 let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
