@@ -5,7 +5,7 @@ import Position from './position.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 0.01;
+const minimal_Display_Distance = 0.05;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
@@ -86,15 +86,6 @@ const initScene = (gl, session) => {
     reticle.matrixAutoUpdate = false;
     reticle.visible = false;
     scene.add(reticle);
-    // later this will be the arrow
-    const geometry = new THREE.SphereGeometry(5, 32, 32);
-    const material = new THREE.MeshBasicMaterial({color: 0xffff00});
-    const sphere = new THREE.Mesh(geometry, material);
-    //sphere.lookAt(camera.position);
-    sphere.translateZ(-0.4);
-    sphere.translateX(-1);
-    sphere.translateY(-1);
-    scene.add(sphere);
 };
 
 function initSensors() {
