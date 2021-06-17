@@ -24,6 +24,8 @@ let object_Placed = 0;
 // Div that the user sees in overlay
 let visual_Display = document.getElementById("visual_Display"); 
 let object_Info = document.getElementById("object-info");
+// this logic should be moved elsewhere as it won't be just this later on
+object_Info.innerHTML = "SomeMockInfo about the object";
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -146,8 +148,8 @@ function onXrButtonClicked() {
 }
 
 function onInfoButtonClicked() {
-    object_Info.innerHTML = "SomeMockInfo";
-    object_Info.hidden = false;
+    info_Button.innerHTML = object_Info.hidden ? `Show info` : `Hide info`;
+    object_Info.hidden = !object_Info.hidden;
 }
 
 function onSessionStarted(session) {
