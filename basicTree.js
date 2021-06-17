@@ -126,7 +126,6 @@ function checkSupportedState() {
         xr_Button.innerHTML = 'Enter AR';
         xr_Button.addEventListener('click', onXrButtonClicked);
         xr_Button.disabled = !supported;
-        info_Button.hidden = false;
         info_Button.addEventListener('click', onInfoButtonClicked);
         info_Button.disabled = !supported;
         } else {
@@ -154,6 +153,7 @@ function onInfoButtonClicked() {
 }
 
 function onSessionStarted(session) {
+    info_Button.hidden = false;
     xrSession = session;
     xr_Button.innerHTML = 'Exit AR';
     // Show which type of DOM Overlay got enabled (if any)
