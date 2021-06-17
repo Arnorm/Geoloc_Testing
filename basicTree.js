@@ -5,7 +5,7 @@ import Position from './position.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 4;
+const minimal_Display_Distance = 0.001;
 let distance_Device_Target = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
@@ -24,6 +24,7 @@ let reticule_range = 2;
 let object_Placed = 0;
 // Div that the user sees in overlay
 let visual_Display = document.getElementById("visual_Display"); 
+let object_Info = document.getElementById("object-info");
 let renderer = null;
 let scene = null;
 let camera = null;
@@ -34,7 +35,9 @@ let reticle = null;
 let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); 
 let lastFrame = Date.now();
 // button to start XR experience
-const xrButton = document.getElementById('xr-button');
+const xr_Button = document.getElementById('xr-button');
+// button to get object information
+const info_Button = document.getElementById('info-button');
 // to display debug information
 const info = document.getElementById('info');
 // to control the xr session
@@ -47,8 +50,8 @@ let xrHitTestSource = null;
 let gl = null;
 
 // init class
-const target_Long = -1.5401977068857935;
-const target_Lat = 47.214438493730896;
+const target_Long = -1.5811203418321496;
+const target_Lat = 47.2357485166728;
 let target_Position = new Position(target_Long, target_Lat);
 let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
@@ -119,16 +122,18 @@ function checkSupportedState() {
         // calling initSensors to get information
         // Need to call them before fullscreen for permission to be seen by user
         initSensors();
-        xrButton.innerHTML = 'Enter AR';
-        xrButton.addEventListener('click', onButtonClicked);
+        xr_Button.innerHTML = 'Enter AR';
+        xr_Button.addEventListener('click', onXrButtonClicked);
+        xr_Button.disabled = !supported;
+        info_Button.addEventListener('click', onInfoButtonClicked);
+        xr_Button.disabled = !supported;
         } else {
-        xrButton.innerHTML = 'AR not found';
+        xr_Button.innerHTML = 'AR not found';
         }
-        xrButton.disabled = !supported;
     });
 }
 
-function onButtonClicked() {
+function onXrButtonClicked() {
     if (!xrSession) {
         is_Fullscreen_Active = true;
         navigator.xr.requestSession('immersive-ar', {
@@ -141,20 +146,22 @@ function onButtonClicked() {
     }
 }
 
+function onInfoButtonClicked() {
+    object_Info.innerHTML = "SomeMockInfo";
+    object_Info.hidden = false;
+}
+
 function onSessionStarted(session) {
     xrSession = session;
-    xrButton.innerHTML = 'Exit AR';
-
+    xr_Button.innerHTML = 'Exit AR';
     // Show which type of DOM Overlay got enabled (if any)
     if (session.domOverlayState) {
     }
-
     // create a canvas element and WebGL context for rendering
     session.addEventListener('end', onSessionEnded);
     let canvas = document.createElement('canvas');
     gl = canvas.getContext('webgl', { xrCompatible: true });
     session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
-
     // here we ask for viewer reference space, since we will be casting a ray
     // from a viewer towards a detected surface. The results of ray and surface intersection
     // will be obtained via xrHitTestSource variable
@@ -163,14 +170,10 @@ function onSessionStarted(session) {
         xrHitTestSource = hitTestSource;
         });
     });
-
     session.requestReferenceSpace('local').then((refSpace) => {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
-
-    //document.getElementById("overlay").addEventListener('click', get); // don't want this event for now
-
     // initialize three.js scene
     initScene(gl, session);
 }
@@ -184,21 +187,11 @@ function onSessionEnded(event) {
     is_Fullscreen_Active = false;
     visual_Display.innerHTML = ``;
     xrSession = null;
-    xrButton.innerHTML = 'Enter AR';
+    xr_Button.innerHTML = 'Enter AR';
     info.innerHTML = '';
     gl = null;
     if (xrHitTestSource) xrHitTestSource.cancel();
     xrHitTestSource = null;
-}
-
-function placeObject() {
-    if (reticle.visible) {
-        const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.setFromMatrixPosition(reticle.matrix);
-        mesh.scale.y = Math.random() * 2 + 1;
-        scene.add(mesh);
-    }
 }
 
 // Utility function to update animated objects
@@ -235,12 +228,6 @@ function onXRFrame(t, frame) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
     renderer.render(scene, camera);
 }
-
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
-/// /// SENSORS /// /// /// ///
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
 
 // Only for IOS, not tested YET
 function startCompass() {
@@ -327,12 +314,6 @@ function getOverlayMessage(abs_Delta_Angle, min_Angle) {
 
 // triggers everything
 checkXR();
-
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
-/// ///   AUXILIARIES   /// ///
-/// /// /// /// /// /// /// ///
-/// /// /// /// /// /// /// ///
 
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
 function calcCrow(startLat, startLng, destLat, destLng) 
