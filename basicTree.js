@@ -220,14 +220,14 @@ function onXRFrame(t, frame) {
             // into AR view. Results indicate that ray intersected with one or more detected surfaces
             const hitTestResults = frame.getHitTestResults(xrHitTestSource);
             if (hitTestResults.length) {
-                console.log(hitTestResults.length);
+                if (hitTestResults.length>1) { 
+                    console.log(hitTestResults.length);
+                }
                 // obtain a local pose at the intersection point
                 const pose = hitTestResults[0].getPose(xrRefSpace);
                 // place a reticle at the intersection point
                 reticle.matrix.fromArray(pose.transform.matrix);
                 reticle.visible = true;
-                reticle.getWorldPosition(a);
-                console.log(a);
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
