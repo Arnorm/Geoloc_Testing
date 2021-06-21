@@ -278,6 +278,8 @@ function handlerOrientation(e) {
 
 // Handles location sensor
 function handlerLocation(position) {
+    // look at .accuracy ...
+    console.log(position.coords.accuracy);
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
