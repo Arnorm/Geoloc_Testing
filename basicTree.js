@@ -74,7 +74,7 @@ const initScene = (gl, session) => {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-    renderer.xr.setReferenceSpaceType('local');
+    renderer.xr.setReferenceSpaceType('unbounded');
     renderer.xr.setSession(session);
 
     // simple sprite to indicate detected surfaces
@@ -131,7 +131,7 @@ function onXrButtonClicked() {
         is_Fullscreen_Active = true;
         navigator.xr.requestSession('immersive-ar', {
             optionalFeatures: ['dom-overlay'],
-            requiredFeatures: ['local', 'hit-test'],
+            requiredFeatures: ['unbounded', 'hit-test'],
             domOverlay: {root: document.getElementById('overlay')}
         }).then(onSessionStarted, onRequestSessionError);
     } else {
@@ -166,7 +166,7 @@ function onSessionStarted(session) {
         xrHitTestSource = hitTestSource;
         });
     });
-    session.requestReferenceSpace('local').then((refSpace) => {
+    session.requestReferenceSpace('unbounded').then((refSpace) => {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
