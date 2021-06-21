@@ -7,6 +7,8 @@ import Position from './position.js';
 // distance at which we consider the user to be "near" the object, in km
 const minimal_Display_Distance = 1;
 let distance_Device_Target = null;
+// This is the uncertainty on position
+let position_accuracy = null;
 let is_Fullscreen_Active = false; // boolean needs to be removed later
 let delta_Angle = null;
 let compass = 0;
@@ -216,7 +218,7 @@ function onXRFrame(t, frame) {
     updateInfoButton();
     let session = frame.session;
     session.requestAnimationFrame(onXRFrame);
-    if (distance_Device_Target < (reticule_range * minimal_Display_Distance)){
+    if ((distance_Device_Target - position_accuracy) < (reticule_range * minimal_Display_Distance)){
         if (xrHitTestSource) {
             // obtain hit test results by casting a ray from the center of device screen
             // into AR view. Results indicate that ray intersected with one or more detected surfaces
@@ -278,8 +280,7 @@ function handlerOrientation(e) {
 
 // Handles location sensor
 function handlerLocation(position) {
-    // look at .accuracy ...
-    console.log(position.coords.accuracy);
+    position_accuracy = position.coords.accuracy;
     bearing_Device_Target = bearing(
         position.coords.latitude,
         position.coords.longitude,
@@ -296,12 +297,13 @@ function handlerLocation(position) {
 }
 
 // Handles overlay display
-// temporarily handles object placement, to be removed
 function handlerDisplay() {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
-    if (is_Fullscreen_Active === true) {
-        if (min_Angle<angle_Threshold){
+    var is_Close_Enough = (distance_Device_Target - position_accuracy) < minimal_Display_Distance;
+    console.log(is_Close_Enough);
+    if (is_Fullscreen_Active === true && is_Close_Enough) {
+        if (min_Angle < angle_Threshold){
             if (reticle.visible && object_Placed < 1) {
                 object_Placed = object_Placed + 1;
                 const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
@@ -334,8 +336,9 @@ function getOverlayMessage(abs_Delta_Angle, min_Angle) {
     }
     // Adding direction only if it's needed
     overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
-    visual_Display.innerHTML = distance_Device_Target < minimal_Display_Distance ? 
+    visual_Display.innerHTML = (distance_Device_Target - position_accuracy)< minimal_Display_Distance ? 
         overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;
+    visual_Display.innerHTML = `Acc on position is : ${position_accuracy.toFixed(0)} \n` + visual_Display.innerHTML;
     return;
 }
 
