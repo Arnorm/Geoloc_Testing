@@ -170,8 +170,20 @@ function onSessionStarted(session) {
         xrRefSpace = refSpace;
         session.requestAnimationFrame(onXRFrame);
     });
+    // Listening to clicks from user (debug mostly for now)
+    document.getElementById("overlay").addEventListener('click', placeObject);
     // initialize three.js scene
     initScene(gl, session);
+}
+
+function placeObject() {
+    if (reticle.visible) {
+        const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.setFromMatrixPosition(reticle.matrix);
+        mesh.scale.y = Math.random() * 2 + 1;
+        scene.add(mesh);
+    }
 }
 
 function onRequestSessionError(ex) {
