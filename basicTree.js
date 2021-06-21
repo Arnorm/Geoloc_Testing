@@ -5,7 +5,9 @@ import Position from './position.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 1;
+const minimal_Display_Distance = 0.06;
+// user won't the reticle unless he is closer than minimal_Display_Distance times this variable
+let reticule_range = 1;
 let distance_Device_Target = null;
 // This is the uncertainty on position
 let position_accuracy = null;
@@ -21,7 +23,7 @@ const isIOS = // different handlings, IOS is not tested yet
 // multiplier at which we start to display the reticle
 let camera_World_Direction = new THREE.Vector3(0,0,0);
 let a = new THREE.Vector3(1,1,1);
-let reticule_range = 2;
+
 let object_Placed = 0;
 // Div that the user sees in overlay
 let visual_Display = document.getElementById("visual_Display"); 
@@ -338,7 +340,7 @@ function getOverlayMessage(abs_Delta_Angle, min_Angle) {
     overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
     visual_Display.innerHTML = (distance_Device_Target - position_accuracy)< minimal_Display_Distance ? 
         overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;
-    visual_Display.innerHTML = `Acc on position is : ${position_accuracy.toFixed(0)} \n` + visual_Display.innerHTML;
+    visual_Display.innerHTML = `Acc on position is : ${position_accuracy.toFixed(0)}` + "<br />" + visual_Display.innerHTML;
     return;
 }
 
