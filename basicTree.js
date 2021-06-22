@@ -5,7 +5,7 @@ import Position from './position.js';
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
-const minimal_Display_Distance = 0.06;
+const minimal_Display_Distance = 0.5;
 // user won't the reticle unless he is closer than minimal_Display_Distance times this variable
 let reticule_range = 1;
 let distance_Device_Target = null;
