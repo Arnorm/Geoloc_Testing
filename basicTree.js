@@ -185,7 +185,7 @@ function placeObject() {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
         //mesh.position.setFromMatrixPosition(reticle.matrix);
-        mesh.position = new THREE.Vector3(-2, -1, 3);
+        mesh.position.set(-2, -1, 3);
         mesh.scale.y = Math.random() * 2 + 1;
         console.log(reticle.matrix);
         console.log(mesh.position);
@@ -307,7 +307,6 @@ function handlerDisplay() {
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
     var is_Close_Enough = (distance_Device_Target - position_accuracy) < minimal_Display_Distance;
-    console.log(is_Close_Enough);
     if (is_Fullscreen_Active === true && is_Close_Enough) {
         if (min_Angle < angle_Threshold){
             if (reticle.visible && object_Placed < 1) {
