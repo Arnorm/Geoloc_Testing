@@ -186,6 +186,7 @@ function placeObject() {
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.setFromMatrixPosition(reticle.matrix);
         mesh.scale.y = Math.random() * 2 + 1;
+        console.log(mesh.position);
         scene.add(mesh);
     }
 }
@@ -254,6 +255,7 @@ function updateInfoButton() {
         else {
             info_Button.hidden = true;
             object_Info.hidden = true;
+            info_Button.innerHTML = `Show info`;
         }
     }
 }
