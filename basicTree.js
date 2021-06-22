@@ -184,8 +184,10 @@ function placeObject() {
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.setFromMatrixPosition(reticle.matrix);
+        //mesh.position.setFromMatrixPosition(reticle.matrix);
+        mesh.position = new THREE.Vector3(-2, -1, 3);
         mesh.scale.y = Math.random() * 2 + 1;
+        console.log(reticle.matrix);
         console.log(mesh.position);
         scene.add(mesh);
     }
