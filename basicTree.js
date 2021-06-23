@@ -207,7 +207,7 @@ function placeObject() {
         });
         const mesh = new THREE.Mesh(planeGeo, planeMat);
         mesh.rotation.x = Math.PI * -.5;
-        scene.add(mesh);
+        //scene.add(mesh);
         
         const gltfLoader = new GLTFLoader();
         gltfLoader.load('./scene.gltf', (gltf) => {
