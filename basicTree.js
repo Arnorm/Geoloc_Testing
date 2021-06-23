@@ -234,9 +234,10 @@ function onXRFrame(t, frame) {
                 reticle.matrix.fromArray(pose.transform.matrix);
                 reticle.visible = true;
                 // only for debug purposes
+                // we need world coordinates hence the transformation
                 var position_Reticle = new THREE.Vector3();
-                position.getPositionFromMatrix(reticle.matrixWorld);
-                console.log(position);
+                position_Reticle.getPositionFromMatrix(reticle.matrixWorld);
+                console.log(position_Reticle);
                 z_dist.innerHTML = "<br />" + `reticle is ${position_Reticle.z} away from user`;
             }
         } else {  // do not show a reticle if no surfaces are intersected
