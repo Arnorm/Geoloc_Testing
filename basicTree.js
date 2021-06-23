@@ -1,6 +1,6 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
-import './threeJs/examples/js/loaders/GLTFLoader.js';
+
 import ArObject from './arObject.js'; 
 import Position from './position.js'; 
 
@@ -192,7 +192,8 @@ function placeObject() {
         mesh.scale.y = Math.random() * 2 + 1;
         */
 
-        /// /// ///
+        /// /// /// 
+        /* 
         const planeSize = 40;
         const loader = new THREE.TextureLoader();
         const texture = loader.load('./checker.png');
@@ -215,6 +216,7 @@ function placeObject() {
             const root = gltf.scene;
             scene.add(root);
         });
+        */
         /// /// ///
     }
 }
