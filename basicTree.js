@@ -1,6 +1,6 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
-import {GLTFLoader} from './threeJs/docs/examples/en/loaders/GLTFLoader.html';
+import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
 import ArObject from './arObject.js'; 
 import Position from './position.js'; 
 
