@@ -185,12 +185,12 @@ function onSessionStarted(session) {
 
 function placeObject() {
     if (reticle.visible) {
-        /*
+        
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.setFromMatrixPosition(reticle.matrix);
         mesh.scale.y = Math.random() * 2 + 1;
-        */
+        scene.add(mesh);
 
         /// /// /// 
         /* 
