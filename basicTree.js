@@ -1,6 +1,4 @@
 // Module is directly included in the project, we might want to change this
-import * as THREE from './threeJs/build/three.module.js';
-import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
 import ArObject from './arObject.js'; 
 import Position from './position.js'; 
 
@@ -22,8 +20,8 @@ const isIOS = // different handlings, IOS is not tested yet
     navigator.userAgent.match(/AppleWebKit/);
 // Variables for AR
 // multiplier at which we start to display the reticle
-let camera_World_Direction = new THREE.Vector3(0,0,0);
-let a = new THREE.Vector3(1,1,1);
+let camera_World_Direction = new Vector3(0,0,0);
+let a = new Vector3(1,1,1);
 
 let object_Placed = 0;
 // Div that the user sees in overlay
@@ -38,7 +36,7 @@ let mixer = null;
 // Circle that the user sees when we may place an object (plane detection)
 let reticle = null; 
 // Object placed "onTouch"
-let geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); 
+let geometry = new CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0); 
 let lastFrame = Date.now();
 // button to start XR experience
 const xr_Button = document.getElementById('xr-button');
@@ -64,15 +62,15 @@ let target_Position = new Position(target_Long, target_Lat);
 let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
 const initScene = (gl, session) => {
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    var light = new THREE.PointLight(0xffffff, 2, 100); // soft white light
+    scene = new Scene();
+    camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var light = new PointLight(0xffffff, 2, 100); // soft white light
     light.position.z = 1;
     light.position.y = 5;
     scene.add(light);
 
-    // create and configure three.js renderer with XR support
-    renderer = new THREE.WebGLRenderer({
+    // create and configure js renderer with XR support
+    renderer = new WebGLRenderer({
         antialias: true,
         alpha: true,
         autoClear: true,
@@ -85,9 +83,9 @@ const initScene = (gl, session) => {
     renderer.xr.setSession(session);
 
     // simple sprite to indicate detected surfaces
-    reticle = new THREE.Mesh(
-        new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-        new THREE.MeshPhongMaterial({ color: 0x0fff00 })
+    reticle = new Mesh(
+        new RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+        new MeshPhongMaterial({ color: 0x0fff00 })
     );
     // we will update it's matrix later using WebXR hit test pose matrix
     reticle.matrixAutoUpdate = false;
@@ -179,34 +177,34 @@ function onSessionStarted(session) {
     });
     // Listening to clicks from user (debug mostly for now)
     document.getElementById("overlay").addEventListener('click', placeObject);
-    // initialize three.js scene
+    // initialize js scene
     initScene(gl, session);
 }
 
 function placeObject() {
     if (reticle.visible) {
         /*
-        const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-        const mesh = new THREE.Mesh(geometry, material);
+        const material = new MeshPhongMaterial({color: 0xffffff * Math.random()});
+        const mesh = new Mesh(geometry, material);
         mesh.position.setFromMatrixPosition(reticle.matrix);
         mesh.scale.y = Math.random() * 2 + 1;
         */
 
         /// /// ///
         const planeSize = 40;
-        const loader = new THREE.TextureLoader();
+        const loader = new TextureLoader();
         const texture = loader.load('./checker.png');
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.magFilter = THREE.NearestFilter;
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.magFilter = NearestFilter;
         const repeats = planeSize / 2;
         texture.repeat.set(repeats, repeats);
-        const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-        const planeMat = new THREE.MeshPhongMaterial({
+        const planeGeo = new PlaneGeometry(planeSize, planeSize);
+        const planeMat = new MeshPhongMaterial({
         map: texture,
-        side: THREE.DoubleSide,
+        side: DoubleSide,
         });
-        const mesh = new THREE.Mesh(planeGeo, planeMat);
+        const mesh = new Mesh(planeGeo, planeMat);
         mesh.rotation.x = Math.PI * -.5;
         //scene.add(mesh);
         
@@ -262,7 +260,7 @@ function onXRFrame(t, frame) {
                 reticle.visible = true;
                 // only for debug purposes
                 // we need world coordinates hence the transformation
-                var position_Reticle = new THREE.Vector3();
+                var position_Reticle = new Vector3();
                 position_Reticle.setFromMatrixPosition(reticle.matrixWorld);
                 z_dist.innerHTML = "<br />" + `reticle is ${position_Reticle.z.toFixed(1)} m away from user`;
             }
@@ -342,8 +340,8 @@ function handlerDisplay() {
         if (min_Angle < angle_Threshold){
             if (reticle.visible && object_Placed < 1) {
                 object_Placed = object_Placed + 1;
-                const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
-                const mesh = new THREE.Mesh(geometry, material);
+                const material = new MeshPhongMaterial({color: 0xffffff * Math.random()});
+                const mesh = new Mesh(geometry, material);
                 mesh.position.setFromMatrixPosition(reticle.matrix);
                 mesh.scale.y = Math.random() * 2 + 1;
                 scene.add(mesh);
