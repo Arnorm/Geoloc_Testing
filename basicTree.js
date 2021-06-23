@@ -168,7 +168,7 @@ function onSessionStarted(session) {
     // from a viewer towards a detected surface. The results of ray and surface intersection
     // will be obtained via xrHitTestSource variable
     session.requestReferenceSpace('viewer').then((refSpace) => {
-        session.requestHitTestSource({ space: refSpace }).then((hitTestSource) => {
+        session.requestHitTestSource({space: refSpace}).then((hitTestSource) => {
         xrHitTestSource = hitTestSource;
         });
     });
@@ -184,11 +184,37 @@ function onSessionStarted(session) {
 
 function placeObject() {
     if (reticle.visible) {
+        /*
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.setFromMatrixPosition(reticle.matrix);
         mesh.scale.y = Math.random() * 2 + 1;
+        */
+
+        /// /// ///
+        const planeSize = 40;
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load('./checker.png');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.magFilter = THREE.NearestFilter;
+        const repeats = planeSize / 2;
+        texture.repeat.set(repeats, repeats);
+        const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
+        const planeMat = new THREE.MeshPhongMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+        });
+        const mesh = new THREE.Mesh(planeGeo, planeMat);
+        mesh.rotation.x = Math.PI * -.5;
         scene.add(mesh);
+        
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load('./scene.gltf', (gltf) => {
+            const root = gltf.scene;
+            scene.add(root);
+        });
+        /// /// ///
     }
 }
 
@@ -237,8 +263,7 @@ function onXRFrame(t, frame) {
                 // we need world coordinates hence the transformation
                 var position_Reticle = new THREE.Vector3();
                 position_Reticle.getPositionFromMatrix(reticle.matrixWorld);
-                console.log(position_Reticle);
-                z_dist.innerHTML = "<br />" + `reticle is ${position_Reticle.z} away from user`;
+                z_dist.innerHTML = "<br />" + `reticle is ${position_Reticle.z.toFixed(1)} m away from user`;
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
