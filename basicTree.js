@@ -1,6 +1,6 @@
 // Module is directly included in the project, we might want to change this
-import ArObject from './arObject.js'; 
-import Position from './position.js'; 
+//import ArObject from './arObject.js'; 
+//import Position from './position.js'; 
 
 // Variables for sensors
 // distance at which we consider the user to be "near" the object, in km
@@ -58,8 +58,8 @@ let gl = null;
 // init class
 const target_Long = -1.5816567683021718;
 const target_Lat = 47.23308004489114;
-let target_Position = new Position(target_Long, target_Lat);
-let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
+//let target_Position = new Position(target_Long, target_Lat);
+//let target_Ar_Object = new ArObject(target_Position, "mockName", "This is a mock text");
 
 const initScene = (gl, session) => {
     scene = new Scene();
