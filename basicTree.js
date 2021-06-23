@@ -45,6 +45,8 @@ const xr_Button = document.getElementById('xr-button');
 const info_Button = document.getElementById('info-button');
 // to display debug information
 const info = document.getElementById('info');
+// to debug reticle/user distance
+const z_dist = document.getElementById('z-component');
 // to control the xr session
 let xrSession = null;
 // reference space used within an application https://developer.mozilla.org/en-US/docs/Web/API/XRSession/requestReferenceSpace
@@ -184,8 +186,7 @@ function placeObject() {
     if (reticle.visible) {
         const material = new THREE.MeshPhongMaterial({color: 0xffffff * Math.random()});
         const mesh = new THREE.Mesh(geometry, material);
-        //mesh.position.setFromMatrixPosition(reticle.matrix);
-        mesh.position.set(-2, -1, 3);
+        mesh.position.setFromMatrixPosition(reticle.matrix);
         mesh.scale.y = Math.random() * 2 + 1;
         console.log(reticle.matrix);
         console.log(mesh.position);
@@ -234,6 +235,8 @@ function onXRFrame(t, frame) {
                 // place a reticle at the intersection point
                 reticle.matrix.fromArray(pose.transform.matrix);
                 reticle.visible = true;
+                // only for debug purposes
+                z_dist.innerHTML = "<br />" + `reticle is ${reticle.z} away from user`;
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
