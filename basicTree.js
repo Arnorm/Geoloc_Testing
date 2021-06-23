@@ -1,5 +1,6 @@
 // Module is directly included in the project, we might want to change this
 import * as THREE from './threeJs/build/three.module.js';
+import {GLTFLoader} from './threeJs/docs/examples/en/loaders/GLTFLoader.html';
 import ArObject from './arObject.js'; 
 import Position from './position.js'; 
 
@@ -209,7 +210,7 @@ function placeObject() {
         mesh.rotation.x = Math.PI * -.5;
         //scene.add(mesh);
         
-        const gltfLoader = new THREE.GLTFLoader();
+        const gltfLoader = new GLTFLoader();
         gltfLoader.load('./scene.gltf', (gltf) => {
             const root = gltf.scene;
             scene.add(root);
