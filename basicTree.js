@@ -236,7 +236,7 @@ function onXRFrame(t, frame) {
                 reticle.matrix.fromArray(pose.transform.matrix);
                 reticle.visible = true;
                 // only for debug purposes
-                z_dist.innerHTML = `reticle is ${reticle.z} away from user`;
+                z_dist.innerHTML = "<br />" + `reticle is ${reticle.z} away from user`;
             }
         } else {  // do not show a reticle if no surfaces are intersected
             reticle.visible = false;
