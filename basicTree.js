@@ -209,7 +209,7 @@ function placeObject() {
         mesh.rotation.x = Math.PI * -.5;
         //scene.add(mesh);
         
-        const gltfLoader = new GLTFLoader();
+        const gltfLoader = new THREE.GLTFLoader();
         gltfLoader.load('./scene.gltf', (gltf) => {
             const root = gltf.scene;
             scene.add(root);
@@ -262,7 +262,7 @@ function onXRFrame(t, frame) {
                 // only for debug purposes
                 // we need world coordinates hence the transformation
                 var position_Reticle = new THREE.Vector3();
-                position_Reticle.getPositionFromMatrix(reticle.matrixWorld);
+                position_Reticle.setFromMatrixPosition(reticle.matrixWorld);
                 z_dist.innerHTML = "<br />" + `reticle is ${position_Reticle.z.toFixed(1)} m away from user`;
             }
         } else {  // do not show a reticle if no surfaces are intersected
