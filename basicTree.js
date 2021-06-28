@@ -374,7 +374,7 @@ function getOverlayMessage(abs_Delta_Angle, min_Angle) {
     }
     // Adding direction only if it's needed
     overlay_Orientation_Angle = min_Angle < angle_Threshold ? overlay_Orientation_Angle : overlay_Orientation_Angle.concat(orientation_Direction);
-    visual_Display.innerHTML = (distance_Device_Target - position_accuracy)< minimal_Display_Distance ? 
+    visual_Display.innerHTML = (distance_Device_Target - position_accuracy) < minimal_Display_Distance ? 
         overlay_Distance.concat(overlay_Orientation_Angle) : overlay_Distance;
     visual_Display.innerHTML = `Acc on position is : ${position_accuracy.toFixed(0)}` + "<br />" + visual_Display.innerHTML;
     return;
