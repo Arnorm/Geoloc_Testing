@@ -24,7 +24,8 @@ div.info-area {
     display: block;
     margin: auto;
     justify-content: center;
-    max-height: 50px;
+    max-height: 70px;
+    margin-top: 20px;
   }
 
   div.info-arrow {
