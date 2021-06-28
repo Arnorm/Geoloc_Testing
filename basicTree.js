@@ -337,8 +337,10 @@ function handlerLocation(position) {
 
 // Handles overlay display
 function handlerDisplay() {
+    var arrow = document.getElementById("arrow");
     var abs_Delta_Angle = ((delta_Angle % 360) + 360) % 360; //Js % is not mod (see doc for more info)
     var min_Angle = Math.min(360 - abs_Delta_Angle, abs_Delta_Angle);
+    arrow.style['transform'] = 'rotate(' + delta_Angle + 'deg)';
     var is_Close_Enough = (distance_Device_Target - position_accuracy) < minimal_Display_Distance;
     if (is_Fullscreen_Active === true && is_Close_Enough) {
         if (min_Angle < angle_Threshold){
